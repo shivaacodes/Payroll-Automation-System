@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  MagnifyingGlass, 
-  Funnel,
-  TerminalWindow
+  TerminalWindow,
+  Trash
 } from '@phosphor-icons/react/dist/ssr';
 import JobRow, { JobData } from '@/components/features/JobRow';
+import Toast from '@/components/ui/Toast';
 
 export default function ProcessingJobs() {
   const [expandedJob, setExpandedJob] = useState<string | null>(null);
@@ -16,50 +16,140 @@ export default function ProcessingJobs() {
     else setExpandedJob(id);
   };
 
-  const mockJobs: JobData[] = [
-    {
-      id: 'job-1',
-      batchId: 'BATCH-2026-05B',
-      totalRecords: 124,
-      status: 'active',
-      completedCount: 80,
-      failedCount: 0,
-      startedAt: '14:02:41',
-      progressText: 'Generating PDFs (65%)',
-      logs: (
-        <div className="text-emerald-400">
-          <div>[14:02:45] PDF Gen: EMP-080 ... OK</div>
-          <div>[14:02:45] Email Dispatch: EMP-079 ... OK</div>
-          <div>[14:02:46] PDF Gen: EMP-081 ... Processing</div>
-        </div>
-      )
-    },
-    {
-      id: 'job-2',
-      batchId: 'BATCH-2026-04B',
-      totalRecords: 118,
-      status: 'failed',
-      completedCount: 116,
-      failedCount: 2,
-      startedAt: 'Yesterday',
-      logs: (
-        <div className="text-rose-400">
-          <div>[09:12:01] SMTP Error: Timeout connecting to smtp.provider.com (EMP-112)</div>
-          <div>[09:12:05] SMTP Error: Timeout connecting to smtp.provider.com (EMP-115)</div>
-          <div className="text-emerald-400">[09:15:00] Batch halted. Waiting for manual retry.</div>
-        </div>
-      )
+  const [liveJobs, setLiveJobs] = useState<JobData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [toastMsg, setToastMsg] = useState('');
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  
+  const executeClearAll = async () => {
+    setShowClearConfirm(false);
+    try {
+      const res = await fetch('http://127.0.0.1:8080/api/jobs', { method: 'DELETE' });
+      if (res.ok) {
+        setLiveJobs([]);
+        setToastMsg('All job history cleared.');
+      }
+    } catch (err) {
+      console.error('Failed to clear jobs');
     }
-  ];
+  };
+
+  const handleDelete = async (batchId: string) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8080/api/jobs/${batchId}`, { method: 'DELETE' });
+      if (res.ok) {
+        setLiveJobs(prev => prev.filter(j => j.batchId !== batchId));
+        setToastMsg(`Batch ${batchId} deleted.`);
+      }
+    } catch (err) {
+      console.error('Failed to delete job');
+    }
+  };
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:8080/api/jobs');
+        if (res.ok) {
+          const data = await res.json();
+          // Transform backend JobBatch into frontend JobData
+          const formattedJobs: JobData[] = data.map((b: any) => {
+            // Go/GORM returns snake_case: completed_count, failed_count, total_records
+            const completed = b.completed_count ?? b.completedCount ?? 0;
+            const failed    = b.failed_count   ?? b.failedCount   ?? 0;
+            const total     = b.total_records  ?? b.totalRecords  ?? 1;
+            const startedAt = b.created_at     ?? b.startedAt;
+
+            const isDone = (completed + failed) >= total;
+            let status: JobData['status'] = 'active';
+            let progressText = 'Processing...';
+
+            if (isDone) {
+              if (failed === 0) {
+                status = 'completed';
+                progressText = 'Done';
+              } else if (completed === 0) {
+                status = 'failed';
+                progressText = 'Failed completely';
+              } else {
+                status = 'failed';
+                progressText = 'Partial Failure';
+              }
+            } else {
+              const pct = Math.round(((completed + failed) / Math.max(1, total)) * 100);
+              progressText = `Generating PDFs & Emails (${pct}%)`;
+            }
+
+            return {
+              id: b.id,
+              batchId: b.id,
+              totalRecords: total,
+              status: status,
+              completedCount: completed,
+              failedCount: failed,
+              startedAt: new Date(startedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+              progressText: progressText,
+              logs: (
+                <div className="text-slate-400">
+                  {isDone ?
+                    <div className={failed > 0 ? 'text-rose-400' : 'text-emerald-400'}>
+                      [SYSTEM] Batch completed. {completed} success, {failed} failed.
+                    </div>
+                  :
+                    <div className="text-emerald-400 animate-pulse">
+                      [SYSTEM] Background workers processing {total - (completed + failed)} remaining records...
+                    </div>
+                  }
+                </div>
+              )
+            };
+          });
+          setLiveJobs(formattedJobs);
+        }
+      } catch (err) {
+        console.error('Failed to fetch jobs', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+    const interval = setInterval(fetchJobs, 2500); // Poll every 2.5s
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="space-y-6">
+
+      <Toast
+        show={!!toastMsg}
+        onClose={() => setToastMsg('')}
+        title="Success"
+        description={toastMsg}
+        variant="success"
+      />
+
+      <Toast
+        show={showClearConfirm}
+        onClose={() => setShowClearConfirm(false)}
+        title="Clear Job History?"
+        description="Are you sure you want to clear all job history? This cannot be undone."
+        variant="confirm"
+        onConfirm={executeClearAll}
+      />
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">Processing Jobs</h2>
-          <p className="text-sm text-slate-500">Live monitoring of PDF generation and email dispatch queues.</p>
         </div>
+        {liveJobs.length > 0 && (
+          <button 
+            onClick={() => setShowClearConfirm(true)}
+            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-rose-200 rounded-sm text-sm font-medium text-rose-600 hover:bg-rose-50 hover:border-rose-300 transition-colors shadow-sm"
+          >
+            <Trash className="w-4 h-4" /> Clear History
+          </button>
+        )}
       </div>
 
       {/* Active Pipeline Terminal */}
@@ -76,25 +166,15 @@ export default function ProcessingJobs() {
         
         <div className="p-5 font-mono text-xs md:text-sm text-slate-300 space-y-3">
           <div className="flex items-start gap-4 text-slate-500 italic">
-            <span>Awaiting active batch process...</span>
+            {liveJobs.some(j => j.status === 'active') ? (
+              <span className="text-emerald-400 animate-pulse">Processing active batches in background threads...</span>
+            ) : (
+              <span>Awaiting active batch process...</span>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <div className="relative w-full sm:w-80">
-          <MagnifyingGlass className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input 
-            type="text" 
-            placeholder="Search Batch ID..." 
-            className="w-full pl-9 pr-4 py-1.5 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-400 shadow-sm"
-          />
-        </div>
-        <button className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-300 rounded-sm text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors shadow-sm w-full sm:w-auto justify-center">
-          <Funnel className="w-4 h-4" /> Filter
-        </button>
-      </div>
 
       {/* Jobs Table */}
       <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden flex flex-col">
@@ -113,14 +193,30 @@ export default function ProcessingJobs() {
               </tr>
             </thead>
             <tbody>
-              {mockJobs.map(job => (
-                <JobRow 
-                  key={job.id} 
-                  job={job} 
-                  isExpanded={expandedJob === job.id} 
-                  onToggle={() => toggleRow(job.id)} 
-                />
-              ))}
+              {loading ? (
+                <tr>
+                  <td colSpan={8} className="text-center py-8 text-slate-500 animate-pulse">
+                    Connecting to Worker Nodes...
+                  </td>
+                </tr>
+              ) : liveJobs.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="text-center py-8 text-slate-500">
+                    <p className="font-semibold text-slate-700">No jobs found.</p>
+                    <p className="text-xs mt-1">Upload a CSV to dispatch tasks to background workers.</p>
+                  </td>
+                </tr>
+              ) : (
+                liveJobs.map(job => (
+                  <JobRow 
+                    key={job.id} 
+                    job={job} 
+                    isExpanded={expandedJob === job.id} 
+                    onToggle={() => toggleRow(job.id)}
+                    onDelete={() => handleDelete(job.id)}
+                  />
+                ))
+              )}
             </tbody>
           </table>
         </div>

@@ -5,7 +5,8 @@ import {
   ArrowClockwise,
   CircleNotch,
   CaretDown,
-  CaretRight
+  CaretRight,
+  Trash
 } from '@phosphor-icons/react/dist/ssr';
 
 export interface JobData {
@@ -24,9 +25,10 @@ interface JobRowProps {
   job: JobData;
   isExpanded: boolean;
   onToggle: () => void;
+  onDelete: () => void;
 }
 
-export default function JobRow({ job, isExpanded, onToggle }: JobRowProps) {
+export default function JobRow({ job, isExpanded, onToggle, onDelete }: JobRowProps) {
   return (
     <>
       <tr className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={onToggle}>
@@ -63,15 +65,20 @@ export default function JobRow({ job, isExpanded, onToggle }: JobRowProps) {
         </td>
         <td className="text-center text-slate-500 text-xs">{job.startedAt}</td>
         <td className="text-right">
-          {job.status === 'failed' ? (
-            <button className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-violet-800 transition-colors">
-              <ArrowClockwise className="w-3 h-3" /> Retry
+          <div className="flex items-center justify-end gap-2">
+            {job.status === 'failed' && (
+              <button className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-violet-800 transition-colors">
+                <ArrowClockwise className="w-3 h-3" /> Retry
+              </button>
+            )}
+            <button 
+              onClick={(e) => { e.stopPropagation(); onDelete(); }}
+              className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-sm transition-colors"
+              title="Delete Batch"
+            >
+              <Trash className="w-4 h-4" />
             </button>
-          ) : (
-            <button className="inline-flex p-1.5 text-slate-300 rounded-sm cursor-not-allowed" disabled>
-              <ArrowClockwise className="w-4 h-4" />
-            </button>
-          )}
+          </div>
         </td>
       </tr>
       
