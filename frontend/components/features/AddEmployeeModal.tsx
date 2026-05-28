@@ -72,7 +72,7 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
                 name="EmployeeID"
                 value={formData.EmployeeID}
                 onChange={handleChange}
-                placeholder="e.g. EMP-1024" 
+                placeholder="e.g. EMP001" 
                 className="w-full px-3 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" 
               />
             </div>
@@ -84,7 +84,7 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
                 name="Name"
                 value={formData.Name}
                 onChange={handleChange}
-                placeholder="Jane Doe" 
+                placeholder="Shiva Sajay" 
                 className="w-full px-3 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" 
               />
             </div>
@@ -96,7 +96,7 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
                 name="Email"
                 value={formData.Email}
                 onChange={handleChange}
-                placeholder="jane@company.com" 
+                placeholder="shivasajay007@gmail.com" 
                 className="w-full px-3 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" 
               />
             </div>
@@ -109,7 +109,7 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
                   name="Designation"
                   value={formData.Designation}
                   onChange={handleChange}
-                  placeholder="Software Engineer" 
+                  placeholder="Sales Executive" 
                   className="w-full px-3 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" 
                 />
               </div>
@@ -121,7 +121,7 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
                   name="DOBYear"
                   value={formData.DOBYear}
                   onChange={handleChange}
-                  placeholder="1995" 
+                  placeholder="2004" 
                   pattern="[0-9]{4}"
                   title="Must be a 4-digit year"
                   className="w-full px-3 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" 
