@@ -6,7 +6,7 @@ import (
 	"payroll-backend/internal/models"
 )
 
-// CreateEmployee handles POST /api/employees
+// recieves POST /api/employees
 func CreateEmployee(c *fiber.Ctx) error {
 	var emp models.Employee
 
@@ -17,14 +17,12 @@ func CreateEmployee(c *fiber.Ctx) error {
 		})
 	}
 
-	// Validate required fields
 	if emp.EmployeeID == "" || emp.Name == "" || emp.Email == "" || emp.DOBYear == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Missing required fields (EmployeeID, Name, Email, DOBYear)",
 		})
 	}
 
-	// Save to Postgres
 	result := db.DB.Create(&emp)
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -38,7 +36,7 @@ func CreateEmployee(c *fiber.Ctx) error {
 	})
 }
 
-// GetEmployees handles GET /api/employees
+// handle: GET /api/employees
 func GetEmployees(c *fiber.Ctx) error {
 	var employees []models.Employee
 
@@ -52,4 +50,19 @@ func GetEmployees(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"data": employees,
 	})
+}
+
+// handle: DELETE /api/employees/:id
+func DeleteEmployee(c *fiber.Ctx) error {
+	employeeID := c.Params("id")
+
+	result := db.DB.Where("employee_id = ?", employeeID).Delete(&models.Employee{})
+	if result.Error != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to delete employee"})
+	}
+	if result.RowsAffected == 0 {
+		return c.Status(404).JSON(fiber.Map{"error": "Employee not found"})
+	}
+
+	return c.JSON(fiber.Map{"message": "Employee deleted successfully"})
 }
