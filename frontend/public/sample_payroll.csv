@@ -1,0 +1,11 @@
+EmployeeID,Name,Email,Designation,DOBYear,BaseSalary
+EMP-1001,Shiva Sajay,shivasajay007@gmail.com,Software Engineer,1995,150000.00
+EMP-1002,Jane Doe,shivasajay007@gmail.com,Product Manager,1992,185000.00
+EMP-1003,John Smith,shivasajay007@gmail.com,UX Designer,1994,120000.00
+EMP-1004,Alice Johnson,shivasajay007@gmail.com,Data Scientist,1991,195000.00
+EMP-1005,Bob Williams,shivasajay007@gmail.com,QA Engineer,1996,110000.00
+EMP-1006,Charlie Brown,shivasajay007@gmail.com,DevOps Engineer,1993,175000.00
+EMP-1007,Diana Prince,shivasajay007@gmail.com,HR Manager,1989,145000.00
+EMP-1008,Evan Wright,shivasajay007@gmail.com,Marketing Lead,1990,160000.00
+EMP-1009,Fiona Gallagher,shivasajay007@gmail.com,Sales Director,1988,210000.00
+EMP-1010,George Miller,shivasajay007@gmail.com,Backend Developer,1997,140000.00
