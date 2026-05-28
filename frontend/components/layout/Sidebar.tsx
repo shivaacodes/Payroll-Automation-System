@@ -29,10 +29,7 @@ export default function Sidebar() {
       {/* Logo Area */}
       <div className="h-14 flex items-center px-4 border-b border-border">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-primary flex items-center justify-center rounded-sm">
-            <Receipt weight="fill" className="text-primary-foreground w-4 h-4" />
-          </div>
-          <span className="font-semibold text-sm tracking-tight text-slate-900">HR Operations</span>
+          <span className="font-semibold text-lg tracking-tight text-slate-900">Sidebar</span>
         </Link>
       </div>
       
