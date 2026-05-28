@@ -1,48 +1,51 @@
 package main
 
 import (
-	"log"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
+	"log"
 
 	"payroll-backend/internal/db"
 	"payroll-backend/internal/handlers"
+	"payroll-backend/internal/workers"
 )
 
 func main() {
-
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("no env file found")
+		log.Println("No .env file found or error loading it")
 	}
 
-	db.Connect() //initialize DB Connection to Supabase
+	db.Connect()
 
-	app := fiber.New() // initialze Fiber
+	// start Background Workers - 5 concurrent threads
+	workers.StartWorkerPool(5)
 
-	// cors ( Nextjs -> Go)
+	app := fiber.New()
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000",
+		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	// Health Check
+	// API Routes
 	app.Get("/health", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{
-			"status":  "ok",
-			"message": "Payroll Automation API is running smoothly!",
-		})
+		return c.SendString("Server is healthy!!!!")
 	})
 
 	app.Post("/api/upload", handlers.HandleCSVUpload)
 
-	// Employee Routes
 	app.Post("/api/employees", handlers.CreateEmployee)
 	app.Get("/api/employees", handlers.GetEmployees)
+	app.Delete("/api/employees/:id", handlers.DeleteEmployee)
 
-	// Start server
+	app.Post("/api/jobs/start", handlers.StartPayrollJob)
+	app.Get("/api/jobs", handlers.GetJobs)
+	app.Delete("/api/jobs/:id", handlers.DeleteJob)
+	app.Delete("/api/jobs", handlers.ClearAllJobs)
+
+	app.Get("/api/dashboard/stats", handlers.GetDashboardStats)
+
 	log.Println("Starting server on port 8080...")
 	log.Fatal(app.Listen(":8080"))
 }
