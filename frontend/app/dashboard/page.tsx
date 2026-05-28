@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   CircleNotch, 
@@ -10,6 +12,35 @@ import Link from 'next/link';
 import StatCard from '@/components/ui/StatCard';
 
 export default function DashboardOverview() {
+  const [stats, setStats] = useState({
+    totalEmployees: 0,
+    emailsSent: 0,
+    failedDeliveries: 0,
+    currentBatch: '-',
+    recentJobs: [] as any[]
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:8080/api/dashboard/stats');
+        if (res.ok) {
+          const data = await res.json();
+          setStats(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch dashboard stats');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+    // Poll every 5 seconds to keep it fresh
+    const interval = setInterval(fetchStats, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="space-y-6">
       
@@ -17,7 +48,6 @@ export default function DashboardOverview() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">Dashboard</h2>
-          <p className="text-sm text-slate-500">System overview and current operational metrics.</p>
         </div>
         <Link 
           href="/dashboard/upload" 
@@ -31,26 +61,26 @@ export default function DashboardOverview() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard 
           title="Total Employees" 
-          value="0" 
+          value={loading ? "..." : stats.totalEmployees.toString()} 
           subtitle="Active roster" 
           icon={Users} 
         />
         <StatCard 
           title="Current Batch" 
-          value="-" 
-          subtitle="No active batch" 
+          value={loading ? "..." : stats.currentBatch.replace('BATCH-', '')} 
+          subtitle={stats.currentBatch === '-' ? 'No active batch' : 'Latest run'} 
           icon={CircleNotch} 
-          valueColor="text-slate-400"
+          valueColor={stats.currentBatch !== '-' ? 'text-blue-600' : 'text-slate-400'}
         />
         <StatCard 
           title="Emails Sent" 
-          value="0" 
-          subtitle="Year to date" 
+          value={loading ? "..." : stats.emailsSent.toString()} 
+          subtitle="All time" 
           icon={EnvelopeSimple} 
         />
         <StatCard 
           title="Failed Deliveries" 
-          value="0" 
+          value={loading ? "..." : stats.failedDeliveries.toString()} 
           subtitle="Requires attention" 
           icon={Database} 
           iconColor="text-rose-400"
@@ -77,12 +107,55 @@ export default function DashboardOverview() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td colSpan={5} className="text-center py-8 text-slate-500">
-                    <Database className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                    <p>No recent jobs found.</p>
-                  </td>
-                </tr>
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} className="text-center py-8 text-slate-500 animate-pulse">
+                      Loading data...
+                    </td>
+                  </tr>
+                ) : stats.recentJobs.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="text-center py-8 text-slate-500">
+                      <Database className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                      <p>No recent jobs found.</p>
+                    </td>
+                  </tr>
+                ) : (
+                  stats.recentJobs.map((job) => {
+                    // Normalize snake_case to camelCase depending on what Go returns
+                    const completed = job.completed_count ?? job.completedCount ?? 0;
+                    const failed = job.failed_count ?? job.failedCount ?? 0;
+                    const total = job.total_records ?? job.totalRecords ?? 1;
+                    const isDone = (completed + failed) >= total;
+                    
+                    let statusLabel = 'Processing';
+                    let statusColor = 'bg-blue-100 text-blue-700 border-blue-200';
+                    
+                    if (isDone) {
+                      if (failed === 0) {
+                        statusLabel = 'Success';
+                        statusColor = 'bg-emerald-100 text-emerald-700 border-emerald-200';
+                      } else {
+                        statusLabel = 'Failed';
+                        statusColor = 'bg-rose-100 text-rose-700 border-rose-200';
+                      }
+                    }
+
+                    return (
+                      <tr key={job.id}>
+                        <td className="font-mono text-xs">{job.id}</td>
+                        <td className="text-slate-500">{new Date(job.created_at || job.startedAt).toLocaleDateString()}</td>
+                        <td>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusColor}`}>
+                            {statusLabel}
+                          </span>
+                        </td>
+                        <td className="font-medium text-emerald-600">{completed}</td>
+                        <td className={failed > 0 ? 'font-bold text-rose-600' : 'text-slate-400'}>{failed}</td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
