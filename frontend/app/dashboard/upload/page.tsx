@@ -8,9 +8,12 @@ import {
   Play,
   FileCsv,
   DownloadSimple,
-  Warning
+  Warning,
+  Spinner
 } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import Toast from '@/components/ui/Toast';
 
 type PreviewRecord = {
   employeeId: string;
@@ -28,6 +31,9 @@ export default function UploadPayroll() {
   const [step, setStep] = useState(1); // 1: upload, 2: validating, 3: preview
   const [records, setRecords] = useState<PreviewRecord[]>([]);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [processing, setProcessing] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const router = useRouter();
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -77,7 +83,14 @@ export default function UploadPayroll() {
       }
       
       setRecords(data.records || []);
-      setStep(3); // Move to preview step
+      
+      // Artificial delay for UI theater (split into two 1.2s chunks)
+      setTimeout(() => {
+        setStep(3); // Move to third theater step
+        setTimeout(() => {
+          setStep(4); // Move to preview step
+        }, 1200);
+      }, 1200);
     } catch (err: any) {
       setUploadError(err.message);
       setStep(1); // Reset on error
@@ -88,30 +101,47 @@ export default function UploadPayroll() {
   const validRecords = records.filter(r => r.status === 'Valid');
   const errorRecords = records.filter(r => r.status === 'Error');
 
+  const startProcessing = async () => {
+    if (validRecords.length === 0) return;
+    setProcessing(true);
+    try {
+      const res = await fetch('http://127.0.0.1:8080/api/jobs/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ records: validRecords })
+      });
+      if (res.ok) {
+        setShowToast(true);
+        setTimeout(() => {
+          router.push('/dashboard/jobs');
+        }, 2000); // Show toast for 2s then redirect
+      } else {
+        const data = await res.json();
+        setUploadError(data.error || 'Failed to start processing');
+        setProcessing(false);
+      }
+    } catch (err) {
+      setUploadError('Failed to connect to backend worker');
+      setProcessing(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      <Toast
+        show={showToast}
+        onClose={() => setShowToast(false)}
+        title="Payroll Batch Dispatched!"
+        description={`${validRecords.length} salary slips are being generated and emailed in the background.`}
+      />
       
       <div>
         <h2 className="text-xl font-semibold text-slate-900">Upload Payroll</h2>
-        <p className="text-sm text-slate-500">Import CSV files to initiate a new payroll processing batch.</p>
       </div>
 
-      {/* Progress Tabs */}
-      <div className="flex items-center gap-1 border-b border-slate-200">
-        <div className={`px-4 py-2 border-b-2 text-sm font-medium ${step >= 1 ? 'border-primary text-primary' : 'border-transparent text-slate-400'}`}>
-          1. Upload CSV
-        </div>
-        <div className={`px-4 py-2 border-b-2 text-sm font-medium ${step >= 2 ? 'border-primary text-primary' : 'border-transparent text-slate-400'}`}>
-          2. Server Validation
-        </div>
-        <div className={`px-4 py-2 border-b-2 text-sm font-medium ${step >= 3 ? 'border-primary text-primary' : 'border-transparent text-slate-400'}`}>
-          3. Preview & Processing
-        </div>
-      </div>
-
-      {/* Step 1: Upload */}
+      {/* Upload Dropzone (Only visible in Step 1) */}
       {step === 1 && (
-        <div className="bg-white border border-slate-200 p-8 rounded-sm shadow-sm space-y-4">
+        <div className="space-y-4 pt-4">
           
           {uploadError && (
             <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-sm text-sm flex items-center gap-2">
@@ -120,13 +150,8 @@ export default function UploadPayroll() {
             </div>
           )}
 
-          <div className="flex justify-end">
-            <button className="text-xs font-medium text-primary hover:underline inline-flex items-center gap-1">
-              <DownloadSimple className="w-3.5 h-3.5" /> Download Sample CSV
-            </button>
-          </div>
           <div 
-            className={`border-2 border-dashed rounded-sm p-12 text-center transition-colors ${dragActive ? 'border-primary bg-blue-50' : 'border-slate-300 bg-slate-50'}`}
+            className={`border-2 border-dashed rounded-sm p-16 text-center transition-all ${dragActive ? 'border-primary bg-primary/5 scale-[0.99]' : 'border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400'}`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
@@ -139,43 +164,104 @@ export default function UploadPayroll() {
               className="hidden" 
               id="file-upload" 
             />
-            <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-3">
-              <CloudArrowUp className="w-10 h-10 text-slate-400" />
-              <div>
-                <p className="text-sm font-semibold text-slate-700">Click to upload or drag and drop</p>
-                <p className="text-xs text-slate-500 mt-1">Strict requirement: CSV only. Max 10MB.</p>
+            <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center group">
+              <div className="w-16 h-16 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center mb-4 group-hover:scale-105 group-hover:border-primary/30 group-hover:text-primary transition-all text-slate-400">
+                <CloudArrowUp className="w-8 h-8" />
               </div>
-              <div className="mt-4 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-sm font-medium text-sm hover:bg-slate-50 transition-colors shadow-sm">
-                Select File
-              </div>
+              <p className="text-base font-semibold text-slate-900">Drag and drop your CSV here</p>
+              <p className="text-sm text-slate-500 mt-1">or <span className="text-primary font-medium hover:underline">browse files</span></p>
             </label>
           </div>
-        </div>
-      )}
-
-      {/* Step 2: Validating */}
-      {step === 2 && (
-        <div className="bg-white border border-slate-200 p-12 rounded-sm shadow-sm text-center flex flex-col items-center gap-4">
-          <FileMagnifyingGlass className="w-10 h-10 text-primary animate-pulse" />
-          <div>
-            <h3 className="text-sm font-semibold text-slate-900">Validating Records on Server...</h3>
-            <p className="text-xs text-slate-500 mt-1">Running structural checks and database lookups in Go.</p>
+          <div className="flex justify-between items-center text-xs text-slate-500 pt-2 px-2">
+            <span>Max file size: 10MB</span>
+            <a 
+              href="/sample_payroll.csv"
+              download="sample_payroll.csv"
+              className="font-medium text-slate-700 bg-white border border-slate-300 px-3 py-1.5 rounded-sm hover:bg-slate-50 hover:text-slate-900 inline-flex items-center gap-1.5 shadow-sm transition-colors"
+            >
+              <DownloadSimple className="w-4 h-4" /> Download Sample CSV
+            </a>
           </div>
         </div>
       )}
 
-      {/* Step 3: Review */}
-      {step === 3 && (
-        <div className="space-y-4">
-          
-          <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-sm flex items-start gap-3">
-            <CheckCircle weight="fill" className="w-5 h-5 text-emerald-600 shrink-0" />
-            <div>
-              <h4 className="text-sm font-semibold text-emerald-900">Validation Complete</h4>
-              <p className="text-xs text-emerald-700 mt-0.5">Found {validRecords.length} valid records in {file?.name}. {errorRecords.length} errors.</p>
+      {/* Processing Steps View (Horizontal Stepper) */}
+      {step >= 2 && (
+        <div className="bg-white border border-slate-200 rounded-sm p-8 shadow-sm mt-6 overflow-x-auto scrollbar-hide">
+          <div className="relative min-w-[600px] max-w-4xl mx-auto">
+            {/* Connecting Lines */}
+            <div className="absolute top-[14px] left-[12%] right-[12%] flex z-0">
+               <div className="h-[2px] flex-1 bg-emerald-200"></div>
+               <div className={`h-[2px] flex-1 transition-colors duration-500 ${step > 2 ? 'bg-amber-200' : 'bg-slate-100'}`}></div>
+               <div className={`h-[2px] flex-1 transition-colors duration-500 ${step > 3 ? 'bg-blue-200' : 'bg-slate-100'}`}></div>
+            </div>
+
+            {/* Steps Nodes */}
+            <div className="relative z-10 flex justify-between">
+              
+              {/* Step 1 */}
+              <div className="flex flex-col items-center gap-3 w-1/4 text-emerald-600">
+                <div className="bg-white rounded-full p-0.5">
+                  <CheckCircle weight="fill" className="w-7 h-7 shrink-0" />
+                </div>
+                <span className="font-semibold text-sm text-center">File Uploaded</span>
+              </div>
+              
+              {/* Step 2 */}
+              <div className={`flex flex-col items-center gap-3 w-1/4 transition-opacity duration-500 ease-in-out ${step >= 2 ? 'opacity-100 text-amber-600' : 'opacity-0 text-slate-300'}`}>
+                <div className="bg-white rounded-full p-0.5">
+                  {step === 2 ? (
+                    <Spinner className="w-7 h-7 shrink-0 text-amber-500 animate-spin" />
+                  ) : (
+                    <CheckCircle weight="fill" className="w-7 h-7 shrink-0 text-amber-500" />
+                  )}
+                </div>
+                <span className="font-semibold text-sm text-center">Validating Data</span>
+              </div>
+
+              {/* Step 3 */}
+              <div className={`flex flex-col items-center gap-3 w-1/4 transition-opacity duration-500 ease-in-out delay-150 ${step >= 3 ? 'opacity-100 text-blue-500' : 'opacity-0 text-slate-300'}`}>
+                <div className="bg-white rounded-full p-0.5">
+                  {step === 3 ? (
+                    <Spinner className="w-7 h-7 shrink-0 text-blue-500 animate-spin" />
+                  ) : (
+                    <CheckCircle weight="fill" className="w-7 h-7 shrink-0 text-blue-500" />
+                  )}
+                </div>
+                <span className="font-semibold text-sm text-center">Checking Database</span>
+              </div>
+
+              {/* Step 4 (Final) */}
+              <div className={`flex flex-col items-center gap-3 w-1/4 transition-opacity duration-500 ease-in-out delay-300 ${step >= 4 ? 'opacity-100' : 'opacity-0'} ${errorRecords.length > 0 ? 'text-rose-600' : 'text-indigo-600'}`}>
+                <div className="bg-white rounded-full p-0.5">
+                  {step >= 4 && (
+                    errorRecords.length > 0 ? (
+                      <Warning weight="fill" className="w-7 h-7 shrink-0" />
+                    ) : (
+                      <CheckCircle weight="fill" className="w-7 h-7 shrink-0" />
+                    )
+                  )}
+                  {step < 4 && <div className="w-7 h-7"></div>}
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="font-semibold text-sm text-center">Validation Finished</span>
+                  {step === 4 && (
+                    <span className={`text-[11px] mt-1 text-center font-medium ${errorRecords.length > 0 ? 'text-rose-600/80' : 'text-indigo-600/80'}`}>
+                      Found {validRecords.length} valid rows, {errorRecords.length} errors
+                    </span>
+                  )}
+                </div>
+              </div>
+
             </div>
           </div>
+        </div>
+      )}
 
+      {/* Step 4: Preview Table */}
+      {step === 4 && (
+        <div className="space-y-4 pt-2">
+          
           {/* Validation Errors UI Block */}
           {errorRecords.length > 0 && (
             <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
@@ -227,8 +313,8 @@ export default function UploadPayroll() {
                         <td className="font-medium text-slate-900">{record.employeeId}</td>
                         <td>{record.name}</td>
                         <td>{record.email}</td>
-                        <td className="text-right font-mono">${record.baseSalary.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                        <td className="text-right font-mono text-emerald-600 font-semibold">${record.netSalary.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                        <td className="text-right font-mono">₹{record.baseSalary.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                        <td className="text-right font-mono text-emerald-600 font-semibold">₹{record.netSalary.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                         <td className="text-center">
                           <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-medium">
                             <CheckCircle weight="fill" /> Ready
@@ -253,12 +339,14 @@ export default function UploadPayroll() {
             >
               Cancel
             </button>
-            <Link 
-              href="/dashboard/jobs"
-              className={`bg-primary text-white px-4 py-2 rounded-sm font-medium text-sm transition-colors inline-flex items-center gap-2 shadow-sm ${validRecords.length === 0 ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'hover:bg-violet-800'}`}
+            <button 
+              onClick={startProcessing}
+              disabled={validRecords.length === 0 || processing}
+              className={`bg-primary text-white px-4 py-2 rounded-sm font-medium text-sm transition-colors inline-flex items-center gap-2 shadow-sm ${(validRecords.length === 0 || processing) ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'hover:bg-violet-800'}`}
             >
-              <Play weight="fill" className="w-4 h-4" /> Start Payroll Processing
-            </Link>
+              <Play weight="fill" className="w-4 h-4" /> 
+              {processing ? 'Starting Workers...' : 'Start Payroll Processing'}
+            </button>
           </div>
         </div>
       )}
