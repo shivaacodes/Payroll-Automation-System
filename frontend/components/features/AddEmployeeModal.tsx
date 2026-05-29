@@ -73,7 +73,7 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
                 name="EmployeeID"
                 value={formData.EmployeeID}
                 onChange={handleChange}
-                placeholder="e.g. EMP001" 
+                placeholder="e.g. EMP00001" 
                 className="w-full px-3 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" 
               />
             </div>
