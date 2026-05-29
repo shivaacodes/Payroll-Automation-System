@@ -185,11 +185,23 @@ export default function UploadPayroll() {
               id="file-upload" 
             />
             <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center group">
-              <div className="w-16 h-16 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center mb-4 group-hover:scale-105 group-hover:border-primary/30 group-hover:text-primary transition-all text-slate-400">
-                <CloudArrowUp className="w-8 h-8" />
-              </div>
-              <p className="text-base font-semibold text-slate-900">Drag and drop your CSV here</p>
-              <p className="text-sm text-slate-500 mt-1">or <span className="text-primary font-medium hover:underline">browse files</span></p>
+              {file ? (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-emerald-50 shadow-sm border border-emerald-200 flex items-center justify-center mb-4 group-hover:scale-105 transition-all text-emerald-500">
+                    <FileCsv className="w-8 h-8" weight="fill" />
+                  </div>
+                  <p className="text-base font-semibold text-emerald-700">{file.name}</p>
+                  <p className="text-sm text-emerald-600 mt-1">{(file.size / 1024).toFixed(1)} KB • <span className="font-medium underline">Click to change file</span></p>
+                </>
+              ) : (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center mb-4 group-hover:scale-105 group-hover:border-primary/30 group-hover:text-primary transition-all text-slate-400">
+                    <CloudArrowUp className="w-8 h-8" />
+                  </div>
+                  <p className="text-base font-semibold text-slate-900">Drag and drop your CSV here</p>
+                  <p className="text-sm text-slate-500 mt-1">or <span className="text-primary font-medium hover:underline">browse files</span></p>
+                </>
+              )}
             </label>
           </div>
           <div className="flex justify-between items-center text-xs text-slate-500 pt-2 px-2">
