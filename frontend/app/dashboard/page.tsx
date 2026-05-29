@@ -63,6 +63,15 @@ export default function DashboardOverview() {
         </Link>
       </div>
 
+      {/* Evaluator Cold Start Notice */}
+      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-sm text-sm flex items-start gap-3 shadow-sm mx-4 md:mx-0">
+        <Warning weight="fill" className="w-5 h-5 shrink-0 mt-0.5 text-amber-500" />
+        <div>
+          <span className="font-semibold block mb-0.5">Note</span>
+          The Go backend API is deployed on Render free tier which goes to sleep after 15 minutes of inactivity. The initial dashboard load or first API call may take <strong>30-50 seconds</strong> to wake the server up.
+        </div>
+      </div>
+
       {/* Top Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard 
