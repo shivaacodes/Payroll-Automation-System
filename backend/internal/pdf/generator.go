@@ -20,6 +20,9 @@ import (
 //go:embed fonts/Roboto-Regular.ttf
 var robotoFont []byte
 
+//go:embed fonts/Roboto-Bold.ttf
+var robotoBoldFont []byte
+
 func formatRupee(amount float64) string {
 	p := message.NewPrinter(language.Make("en-IN"))
 	return p.Sprintf("₹ %.2f", amount)
@@ -29,6 +32,7 @@ func formatRupee(amount float64) string {
 func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (string, error) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddUTF8FontFromBytes("Roboto", "", robotoFont)
+	pdf.AddUTF8FontFromBytes("Roboto", "B", robotoBoldFont)
 	pdf.AddPage()
 
 	pdf.SetFont("Arial", "B", 24)
