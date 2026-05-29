@@ -156,7 +156,7 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	pdf.CellFormat(45, 15, formatRupee(entry.NetSalary), "T B", 1, "R", false, 0, "")
 
 	// Disclaimer
-	pdf.SetY(280)
+	pdf.SetY(265)
 	pdf.SetFont("Arial", "", 9)
 	pdf.SetTextColor(150, 150, 150)
 	pdf.CellFormat(0, 10, "This is a system-generated document and does not require a physical signature.", "", 0, "C", false, 0, "")
