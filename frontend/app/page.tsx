@@ -53,12 +53,12 @@ export default function LandingPage() {
             transition={{ delay: 0.2 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Link href="/dashboard" className="bg-primary text-white px-8 py-4 text-lg rounded-md font-medium inline-flex items-center gap-2 hover:bg-violet-800 transition-all shadow-sm">
+            <Link href="/dashboard" className="w-full sm:w-64 justify-center bg-primary text-white px-8 py-4 text-lg rounded-md font-medium inline-flex items-center gap-2 hover:bg-violet-800 transition-all shadow-sm">
               Launch Admin Portal <ArrowRight weight="bold" className="w-5 h-5" />
             </Link>
             <button 
               onClick={scrollToArchitecture}
-              className="bg-white text-slate-700 border border-slate-300 px-8 py-4 text-lg rounded-md font-medium inline-flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm"
+              className="w-full sm:w-64 justify-center bg-white text-slate-700 border border-slate-300 px-8 py-4 text-lg rounded-md font-medium inline-flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm"
             >
               Architecture Docs <ArrowDown weight="bold" className="w-5 h-5 text-slate-400" />
             </button>
@@ -97,14 +97,20 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">System Architecture</h2>
           </div>
-          {/* Placeholder for future architecture docs/diagram */}
+          <div className="w-full max-w-6xl mx-auto rounded-none overflow-hidden border border-slate-200 bg-white shadow-sm p-4">
+            <img 
+              src="/payroll-architecture diagram.png" 
+              alt="Payroll Architecture Diagram" 
+              className="w-full h-auto object-contain" 
+            />
+          </div>
         </section>
 
       </main>
 
       {/* Footer */}
       <footer className="border-t border-slate-200 py-12 text-center text-slate-500 text-sm">
-        <p>Made by Shiva 🚀</p>
+        <p>Made by Shiva</p>
       </footer>
     </div>
   );
