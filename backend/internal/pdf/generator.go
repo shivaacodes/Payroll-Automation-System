@@ -17,10 +17,7 @@ import (
 	"golang.org/x/text/message"
 )
 
-//go:embed fonts/Roboto-Regular.ttf
 var robotoFont []byte
-
-//go:embed fonts/Roboto-Bold.ttf
 var robotoBoldFont []byte
 
 func formatRupee(amount float64) string {
@@ -80,15 +77,14 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	pdf.SetFont("Arial", "", 12)
 	pdf.SetTextColor(0, 0, 0)
 	pdf.SetX(15)
-	
-	// Title case the designation
+
 	titleCaser := cases.Title(language.English)
 	formattedDesignation := titleCaser.String(emp.Designation)
-	
+
 	pdf.Cell(90, 8, formattedDesignation)
 	pdf.Cell(90, 8, emp.Email)
 
-	pdf.Ln(30) // Increased padding before Earnings table
+	pdf.Ln(30)
 	pdf.SetDrawColor(220, 220, 220)
 	pdf.SetLineWidth(0.2)
 
@@ -130,8 +126,7 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	pdf.CellFormat(25, 10, "", "B", 1, "R", false, 0, "")
 
 	pdf.Ln(5)
-	
-	// Subtotals
+
 	totalEarnings := entry.BaseSalary + entry.HRA + entry.Allowances
 	totalDeductions := entry.Deductions
 
@@ -152,23 +147,20 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 
 	pdf.SetFont("Arial", "B", 12)
 	pdf.CellFormat(40, 15, "NET PAYABLE", "T B", 0, "L", false, 0, "")
-	pdf.SetFont("Roboto", "B", 14) // Use Roboto for Rupee in total
+	pdf.SetFont("Roboto", "B", 14)
 	pdf.CellFormat(45, 15, formatRupee(entry.NetSalary), "T B", 1, "R", false, 0, "")
 
-	// Disclaimer
 	pdf.SetY(265)
 	pdf.SetFont("Arial", "", 9)
 	pdf.SetTextColor(150, 150, 150)
 	pdf.CellFormat(0, 10, "This is a system-generated document and does not require a physical signature.", "", 0, "C", false, 0, "")
 
-	// save
 	tempRawPath := filepath.Join(os.TempDir(), fmt.Sprintf("%s_raw.pdf", emp.EmployeeID))
 	err := pdf.OutputFileAndClose(tempRawPath)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate native PDF: %v", err)
 	}
 
-	//encrypt
 	firstName := strings.Split(emp.Name, " ")[0]
 	password := fmt.Sprintf("%s%s", firstName, emp.DOBYear)
 

@@ -2,6 +2,7 @@ package workers
 
 import (
 	"log"
+	"time"
 
 	"gorm.io/gorm"
 	"payroll-backend/internal/db"
@@ -12,6 +13,7 @@ import (
 
 type JobPayload struct {
 	BatchID  string
+	JobIndex int
 	Employee models.Employee
 	Entry    models.PayrollEntry
 }
@@ -35,10 +37,15 @@ func worker(workerID int) {
 			log.Printf("[Worker %d] ERROR PDF: %v", workerID, err)
 			success = false
 		} else {
-			err = mailer.SendSalarySlip(job.Employee, pdfPath, job.Entry.MonthYear)
-			if err != nil {
-				log.Printf("[Worker %d] ERROR Email: %v", workerID, err)
-				success = false
+			if job.JobIndex < 5 {
+				err = mailer.SendSalarySlip(job.Employee, pdfPath, job.Entry.MonthYear)
+				if err != nil {
+					log.Printf("[Worker %d] ERROR Email: %v", workerID, err)
+					success = false
+				}
+			} else {
+				//Simulate SendGrid request to prevent sending too many requests
+				time.Sleep(50 * time.Millisecond)
 			}
 		}
 
