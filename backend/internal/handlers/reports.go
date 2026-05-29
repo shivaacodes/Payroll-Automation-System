@@ -50,13 +50,11 @@ func GetPayslipPDF(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": "Employee not found"})
 	}
 
-	// Generate PDF on the fly
 	pdfPath, err := pdf.GenerateAndProtectSlip(emp, entry)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to generate PDF"})
 	}
 
-	// Make sure to clean up the temporary file after streaming
 	defer os.Remove(pdfPath)
 
 	if action == "download" {
