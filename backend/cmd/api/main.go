@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"log"
+	"os"
 
 	"payroll-backend/internal/db"
 	"payroll-backend/internal/handlers"
@@ -46,6 +47,11 @@ func main() {
 
 	app.Get("/api/dashboard/stats", handlers.GetDashboardStats)
 
-	log.Println("Starting server on port 8080...")
-	log.Fatal(app.Listen(":8080"))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	
+	log.Printf("Starting server on port %s...", port)
+	log.Fatal(app.Listen(":" + port))
 }
