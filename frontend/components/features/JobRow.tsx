@@ -89,16 +89,18 @@ export default function JobRow({ job, isExpanded, onToggle, onDelete }: JobRowPr
                   <span className={`text-xs block mb-1 ${job.failedCount > 0 ? 'text-rose-500' : 'text-slate-500'}`}>Failed Emails</span>
                   <span className={`text-lg font-mono ${job.failedCount > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{job.failedCount}</span>
                 </div>
-                <div className="bg-slate-900 border border-slate-800 p-3 rounded-sm shadow-sm font-mono text-[10px] h-16 overflow-y-auto">
-                  <div className="text-slate-400">
+                <div className="bg-white border border-slate-200 p-3 rounded-sm shadow-sm flex items-center">
+                  <div>
+                    <span className="text-xs text-slate-500 block mb-1">System Status</span>
                     {job.status !== 'active' ? (
-                      <div className={job.failedCount > 0 ? 'text-rose-400' : 'text-emerald-400'}>
-                        [SYSTEM] Batch completed. {job.completedCount} success, {job.failedCount} failed.
-                      </div>
+                      <span className={`text-sm font-medium ${job.failedCount > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                        Batch completed: {job.completedCount} successful, {job.failedCount} failed.
+                      </span>
                     ) : (
-                      <div className="text-emerald-400 animate-pulse">
-                        [SYSTEM] Background workers processing {job.totalRecords - (job.completedCount + job.failedCount)} remaining records...
-                      </div>
+                      <span className="text-sm font-medium text-blue-600 flex items-center gap-2">
+                        <CircleNotch className="w-4 h-4 animate-spin" />
+                        Processing {job.totalRecords - (job.completedCount + job.failedCount)} remaining records...
+                      </span>
                     )}
                   </div>
                 </div>

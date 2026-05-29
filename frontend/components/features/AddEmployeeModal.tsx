@@ -104,15 +104,21 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Designation</label>
-                <input 
+                <select 
                   required
-                  type="text" 
                   name="Designation"
                   value={formData.Designation}
-                  onChange={handleChange}
-                  placeholder="Sales Executive" 
-                  className="w-full px-3 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" 
-                />
+                  onChange={handleChange as any}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm bg-white" 
+                >
+                  <option value="" disabled>Select role</option>
+                  <option value="Software Engineer">Software Engineer</option>
+                  <option value="HR Manager">HR Manager</option>
+                  <option value="Sales Executive">Sales Executive</option>
+                  <option value="Marketing Director">Marketing Director</option>
+                  <option value="Product Manager">Product Manager</option>
+                  <option value="Data Scientist">Data Scientist</option>
+                </select>
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Birth Year</label>

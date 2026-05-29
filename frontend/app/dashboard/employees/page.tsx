@@ -1,14 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Plus,
   Spinner,
-  Trash
+  Trash,
+  FileCsv,
+  DownloadSimple
 } from '@phosphor-icons/react/dist/ssr';
 import AddEmployeeModal from '@/components/features/AddEmployeeModal';
 import Toast from '@/components/ui/Toast';
 import { useEmployees } from '@/hooks/useEmployees';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function EmployeesDirectory() {
   const { employees, loading, error, deleteEmployee, clearAllEmployees, refresh } = useEmployees();
@@ -18,6 +21,8 @@ export default function EmployeesDirectory() {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [successToast, setSuccessToast] = useState('');
   const [deleteToast, setDeleteToast] = useState(false);
+  const [isUploadingBulk, setIsUploadingBulk] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleModalSuccess = () => {
     setShowModal(false);
@@ -39,8 +44,8 @@ export default function EmployeesDirectory() {
       await deleteEmployee(employeeID);
       setDeleteToast(true);
       setTimeout(() => setDeleteToast(false), 3000);
-    } catch {
-      // Error handled by hook theoretically, or can be caught
+    } catch (err) {
+      console.error(err);
     } finally {
       setDeletingId(null);
     }
@@ -54,6 +59,37 @@ export default function EmployeesDirectory() {
       setTimeout(() => setDeleteToast(false), 3000);
     } catch {
       // Error handled
+    }
+  };
+
+  const handleBulkUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingBulk(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/employees/bulk`, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to upload CSV');
+      }
+      
+      const data = await res.json();
+      setSuccessToast(`Successfully imported ${data.count} employees!`);
+      setTimeout(() => setSuccessToast(''), 3500);
+      refresh();
+    } catch (error: any) {
+      alert(error.message || 'Error uploading file');
+    } finally {
+      setIsUploadingBulk(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -102,7 +138,28 @@ export default function EmployeesDirectory() {
         <div>
           <h2 className="text-xl font-semibold text-slate-900">Employee Directory</h2>
         </div>
-        <div className="flex gap-2">
+        
+        {/* Evaluator Demo Banner */}
+        <div className="flex flex-col md:flex-row bg-indigo-50 border border-indigo-200 rounded-sm py-1.5 px-3 items-start md:items-center justify-between gap-3 shadow-sm w-full md:w-auto">
+          <div className="flex items-center gap-2">
+            <div className="bg-indigo-100 text-indigo-600 p-1 rounded-full">
+              <DownloadSimple weight="bold" className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-indigo-900 leading-tight">Evaluator Demo Data</p>
+              <p className="text-[10px] text-indigo-700 leading-tight">50-record CSV to test Go bulk ingestion.</p>
+            </div>
+          </div>
+          <a 
+            href="/demo_employees.csv"
+            download="demo_employees.csv"
+            className="shrink-0 font-medium text-indigo-700 bg-white border border-indigo-200 px-2.5 py-1 rounded-sm hover:bg-indigo-100 transition-colors text-xs inline-flex items-center gap-1.5 shadow-sm"
+          >
+            Download
+          </a>
+        </div>
+
+        <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
           {employees.length > 0 && (
             <button 
               onClick={() => setShowClearConfirm(true)}
@@ -111,6 +168,23 @@ export default function EmployeesDirectory() {
               <Trash className="w-4 h-4" /> Clear All
             </button>
           )}
+          
+          <input 
+            type="file" 
+            accept=".csv" 
+            ref={fileInputRef} 
+            onChange={handleBulkUpload} 
+            className="hidden" 
+          />
+          <button 
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploadingBulk}
+            className="bg-white border border-slate-300 text-slate-700 px-3 py-1.5 rounded-sm text-sm font-medium hover:bg-slate-50 transition-colors inline-flex items-center gap-2 shadow-sm disabled:opacity-50"
+          >
+            {isUploadingBulk ? <Spinner className="w-4 h-4 animate-spin" /> : <FileCsv className="w-4 h-4 text-slate-500" />}
+            {isUploadingBulk ? 'Importing...' : 'Import CSV'}
+          </button>
+
           <button 
             onClick={() => setShowModal(true)}
             className="bg-primary text-white px-3 py-1.5 rounded-sm text-sm font-medium hover:bg-violet-800 transition-colors inline-flex items-center gap-2 shadow-sm"

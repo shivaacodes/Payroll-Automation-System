@@ -21,7 +21,6 @@ export function useJobs() {
 
   const loadJobs = useCallback(async () => {
     try {
-      setLoading(true);
       const data = await fetchJSON('/api/jobs');
       const formattedJobs = (data || []).map((b: any): Job => {
         const completed = b.completed_count ?? b.completedCount ?? 0;
@@ -92,7 +91,7 @@ export function useJobs() {
   const clearHistory = async () => {
     setIsClearing(true);
     try {
-      await fetchAPI('/api/jobs/clear', { method: 'DELETE' });
+      await fetchAPI('/api/jobs', { method: 'DELETE' });
       setJobs([]);
       return true;
     } catch (err: any) {

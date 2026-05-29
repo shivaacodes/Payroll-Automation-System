@@ -11,6 +11,8 @@ export default function ReportsPage() {
   const { reports, loading, resendingId, resendEmail, deleteReport, clearAllReports } = useReports();
   const [toastMsg, setToastMsg] = useState('');
   const [toastVar, setToastVar] = useState<'success' | 'danger'>('success');
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const handleResend = async (id: number) => {
     try {
@@ -23,8 +25,14 @@ export default function ReportsPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this report?')) return;
+  const handleDelete = (id: number) => {
+    setPendingDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
+    const id = pendingDeleteId;
+    setPendingDeleteId(null);
     try {
       await deleteReport(id);
       setToastVar('success');
@@ -35,8 +43,12 @@ export default function ReportsPage() {
     }
   };
 
-  const handleClearAll = async () => {
-    if (!window.confirm('Are you sure you want to clear ALL reports? This action cannot be undone.')) return;
+  const handleClearAll = () => {
+    setShowClearConfirm(true);
+  };
+
+  const confirmClearAll = async () => {
+    setShowClearConfirm(false);
     try {
       await clearAllReports();
       setToastVar('success');
@@ -55,6 +67,22 @@ export default function ReportsPage() {
         title={toastVar === 'success' ? 'Success' : 'Error'}
         description={toastMsg}
         variant={toastVar}
+      />
+      <Toast
+        show={!!pendingDeleteId}
+        onClose={() => setPendingDeleteId(null)}
+        title="Delete Report?"
+        description="Are you sure you want to permanently delete this report?"
+        variant="confirm"
+        onConfirm={confirmDelete}
+      />
+      <Toast
+        show={showClearConfirm}
+        onClose={() => setShowClearConfirm(false)}
+        title="Clear All Reports?"
+        description="Are you sure you want to clear ALL reports? This action cannot be undone."
+        variant="confirm"
+        onConfirm={confirmClearAll}
       />
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

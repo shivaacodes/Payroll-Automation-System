@@ -26,7 +26,6 @@ export async function fetchAPI(endpoint: string, options?: RequestInit) {
 
 export async function fetchJSON(endpoint: string, options?: RequestInit) {
   const response = await fetchAPI(endpoint, options);
-  // Handle empty responses gracefully
   const text = await response.text();
   return text ? JSON.parse(text) : {};
 }
