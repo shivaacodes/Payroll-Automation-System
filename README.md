@@ -6,7 +6,7 @@
 ![PostgreSQL Version](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat&logo=postgresql)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)
 
-An enterprise-grade, end-to-end payroll processing and dispatch platform built for stability, security, and velocity. This system ingests CSV employee data, concurrently generates AES-256 encrypted PDF salary slips, and dispatches them via SendGrid, all while providing real-time UI tracking through a decoupled React dashboard.
+An enterprise-grade, end-to-end payroll processing and dispatch platform. This system ingests CSV or Excel employee data, concurrently generates AES-256 encrypted PDF salary slips, and dispatches them via SendGrid(SMTP), all while providing real-time UI tracking through a decoupled Nextjs dashboard.
 
 ## Processing Pipeline
 
@@ -14,7 +14,7 @@ An enterprise-grade, end-to-end payroll processing and dispatch platform built f
 
 ## Architecture
 
-The system was engineered with a strict "Zero Bloat" philosophy. Rather than relying on heavy message brokers (like RabbitMQ or Redis) for background processing, we utilize native Go Channels and Goroutines. This keeps the infrastructure lightweight and incredibly fast while achieving high-throughput concurrent processing.
+Rather than relying on heavy message brokers (like RabbitMQ or Redis) for background processing, we utilize native Go Channels and Goroutines. This keeps the infrastructure lightweight and incredibly fast while achieving high-throughput concurrent processing
 
 ![System Architecture](frontend/public/payroll-architecture-diagram.png)
 
@@ -72,5 +72,5 @@ docker compose down
 ## Tech Stack
 - **Frontend:** Next.js (App Router), React, TailwindCSS.
 - **Backend:** Go, Fiber, GORM, `pdfcpu`, `gofpdf`.
-- **Database:** PostgreSQL.
+- **Database:** PostgreSQL (Supabase)
 - **Infrastructure:** Docker, Docker Compose (Multi-stage builds for minimal container sizes).
