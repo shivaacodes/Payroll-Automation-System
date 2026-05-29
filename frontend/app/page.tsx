@@ -53,14 +53,14 @@ export default function LandingPage() {
             transition={{ delay: 0.2 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Link href="/dashboard" className="w-full sm:w-64 justify-center bg-primary text-white px-8 py-4 text-lg rounded-md font-medium inline-flex items-center gap-2 hover:bg-violet-800 transition-all shadow-sm">
-              Launch Admin Portal <ArrowRight weight="bold" className="w-5 h-5" />
+            <Link href="/dashboard" className="w-full sm:w-[320px] justify-center bg-primary text-white px-8 py-4 text-lg rounded-md font-medium inline-flex items-center gap-2 hover:bg-violet-800 transition-all shadow-sm whitespace-nowrap">
+              Launch Admin Portal <ArrowRight weight="bold" className="w-5 h-5 flex-shrink-0" />
             </Link>
             <button 
               onClick={scrollToArchitecture}
-              className="w-full sm:w-64 justify-center bg-white text-slate-700 border border-slate-300 px-8 py-4 text-lg rounded-md font-medium inline-flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm"
+              className="w-full sm:w-[320px] justify-center bg-white text-slate-700 border border-slate-300 px-8 py-4 text-lg rounded-md font-medium inline-flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm whitespace-nowrap"
             >
-              Architecture Docs <ArrowDown weight="bold" className="w-5 h-5 text-slate-400" />
+              Architecture Docs <ArrowDown weight="bold" className="w-5 h-5 text-slate-400 flex-shrink-0" />
             </button>
           </motion.div>
 
@@ -75,7 +75,7 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">Processing Pipeline</h2>
           </div>
-          <div className="w-full max-w-6xl mx-auto rounded-none overflow-hidden border border-slate-200 bg-white shadow-sm">
+          <div className="w-full max-w-6xl mx-auto">
             <img 
               src="/pipeline.png" 
               alt="System Architecture Pipeline" 
@@ -97,7 +97,7 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">System Architecture</h2>
           </div>
-          <div className="w-full max-w-6xl mx-auto rounded-none overflow-hidden border border-slate-200 bg-white shadow-sm p-4">
+          <div className="w-full max-w-6xl mx-auto p-4">
             <img 
               src="/payroll-architecture diagram.png" 
               alt="Payroll Architecture Diagram" 
