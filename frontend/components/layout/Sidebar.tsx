@@ -8,7 +8,6 @@ import {
   CloudArrowUp, 
   HardDrives, 
   Users,
-  Gear, 
   SignOut,
   Receipt,
   FileText
@@ -19,7 +18,6 @@ export const navItems = [
   { href: '/dashboard/upload', label: 'Upload Payroll', icon: CloudArrowUp },
   { href: '/dashboard/jobs', label: 'Processing Jobs', icon: HardDrives },
   { href: '/dashboard/employees', label: 'Employees', icon: Users },
-  { href: '/dashboard/settings', label: 'Settings', icon: Gear },
   { href: '/dashboard/reports', label: 'Reports', icon: FileText },
 ];
 
