@@ -10,7 +10,8 @@ import {
   Users,
   Gear, 
   SignOut,
-  Receipt
+  Receipt,
+  FileText
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navItems = [
@@ -19,6 +20,7 @@ export const navItems = [
   { href: '/dashboard/jobs', label: 'Processing Jobs', icon: HardDrives },
   { href: '/dashboard/employees', label: 'Employees', icon: Users },
   { href: '/dashboard/settings', label: 'Settings', icon: Gear },
+  { href: '/dashboard/reports', label: 'Reports', icon: FileText },
 ];
 
 export default function Sidebar() {

@@ -47,6 +47,10 @@ func main() {
 
 	app.Get("/api/dashboard/stats", handlers.GetDashboardStats)
 
+	app.Get("/api/reports", handlers.GetReports)
+	app.Get("/api/reports/:id/pdf", handlers.GetPayslipPDF)
+	app.Post("/api/reports/:id/resend", handlers.ResendPayslip)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
