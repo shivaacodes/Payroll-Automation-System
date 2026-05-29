@@ -3,11 +3,12 @@ package pdf
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 
 	"github.com/jung-kurt/gofpdf"
+	"github.com/pdfcpu/pdfcpu/pkg/api"
+	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"payroll-backend/internal/models"
@@ -134,13 +135,14 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	password := fmt.Sprintf("%s%s", firstName, emp.DOBYear)
 
 	finalPath := filepath.Join(os.TempDir(), fmt.Sprintf("%s_salary_slip.pdf", emp.EmployeeID))
-	cmd := exec.Command("qpdf", "--encrypt", password, password, "256", "--", tempRawPath, finalPath)
-	err = cmd.Run()
+	
+	conf := model.NewAESConfiguration(password, password, 256)
+	err = api.EncryptFile(tempRawPath, finalPath, conf)
 
 	os.Remove(tempRawPath)
 
 	if err != nil {
-		return "", fmt.Errorf("qpdf encryption failed: %v", err)
+		return "", fmt.Errorf("pdfcpu encryption failed: %v", err)
 	}
 
 	return finalPath, nil

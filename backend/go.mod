@@ -10,6 +10,7 @@ require (
 	golang.org/x/text v0.35.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1
+	github.com/pdfcpu/pdfcpu v0.12.1
 )
 
 require (
