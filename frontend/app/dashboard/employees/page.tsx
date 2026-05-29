@@ -32,7 +32,7 @@ export default function EmployeesDirectory() {
   const fetchEmployees = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://127.0.0.1:8080/api/employees');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/employees`);
       const data = await res.json();
       if (res.ok) {
         setEmployees(data.data || []);
@@ -67,7 +67,7 @@ export default function EmployeesDirectory() {
     setPendingDeleteId(null);
     setDeletingId(employeeID);
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/employees/${employeeID}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}`}/api/employees/${employeeID}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -88,7 +88,7 @@ export default function EmployeesDirectory() {
   const executeClearAll = async () => {
     setShowClearConfirm(false);
     try {
-      const res = await fetch('http://127.0.0.1:8080/api/employees', { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/employees`, { method: 'DELETE' });
       if (res.ok) {
         setEmployees([]);
         setDeleteToast(true);

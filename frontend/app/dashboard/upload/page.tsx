@@ -71,7 +71,7 @@ export default function UploadPayroll() {
 
     try {
       // Send the file to our Go Fiber Backend
-      const res = await fetch('http://127.0.0.1:8080/api/upload', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -105,7 +105,7 @@ export default function UploadPayroll() {
     if (validRecords.length === 0) return;
     setProcessing(true);
     try {
-      const res = await fetch('http://127.0.0.1:8080/api/jobs/start', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/jobs/start`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ records: validRecords })

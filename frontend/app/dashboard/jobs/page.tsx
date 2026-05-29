@@ -24,7 +24,7 @@ export default function ProcessingJobs() {
   const executeClearAll = async () => {
     setShowClearConfirm(false);
     try {
-      const res = await fetch('http://127.0.0.1:8080/api/jobs', { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/jobs`, { method: 'DELETE' });
       if (res.ok) {
         setLiveJobs([]);
         setToastMsg('All job history cleared.');
@@ -36,7 +36,7 @@ export default function ProcessingJobs() {
 
   const handleDelete = async (batchId: string) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/jobs/${batchId}`, { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}`}/api/jobs/${batchId}`, { method: 'DELETE' });
       if (res.ok) {
         setLiveJobs(prev => prev.filter(j => j.batchId !== batchId));
         setToastMsg(`Batch ${batchId} deleted.`);
@@ -49,7 +49,7 @@ export default function ProcessingJobs() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:8080/api/jobs');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/jobs`);
         if (res.ok) {
           const data = await res.json();
           // Transform backend JobBatch into frontend JobData
