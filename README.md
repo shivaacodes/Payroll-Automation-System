@@ -6,7 +6,7 @@
 ![PostgreSQL Version](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat&logo=postgresql)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)
 
-An enterprise-grade, end-to-end payroll processing and dispatch platform. This system ingests CSV or Excel employee data, concurrently generates AES-256 encrypted PDF salary slips, and dispatches them via SendGrid(SMTP), all while providing real-time UI tracking through a decoupled Nextjs dashboard.
+An enterprise-grade, end-to-end payroll processing and dispatch platform. This system ingests CSV/Excel employee data, concurrently generates AES-256 encrypted PDF salary slips, and dispatches them via SendGrid(SMTP), all while providing real-time UI tracking through a decoupled Nextjs dashboard.
 
 ## Processing Pipeline
 

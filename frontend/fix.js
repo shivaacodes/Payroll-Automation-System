@@ -11,7 +11,6 @@ function processDir(dir) {
     } else if (fullPath.endsWith('.tsx')) {
       let content = fs.readFileSync(fullPath, 'utf8');
       
-      // Fix rounded-none-none and shadow-none-none
       content = content.replace(/\brounded-none-none(-none)*\b/g, 'rounded-none');
       content = content.replace(/\bshadow-none-none(-none)*\b/g, 'shadow-none');
       
