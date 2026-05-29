@@ -22,7 +22,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-white text-foreground font-sans selection:bg-primary selection:text-primary-foreground">
       
       {/* Removed Navbar */}
 
