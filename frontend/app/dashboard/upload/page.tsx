@@ -151,7 +151,7 @@ export default function UploadPayroll() {
           )}
 
           <div 
-            className={`border-2 border-dashed rounded-sm p-16 text-center transition-all ${dragActive ? 'border-primary bg-primary/5 scale-[0.99]' : 'border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400'}`}
+            className={`border-2 border-dashed rounded-sm p-8 md:p-16 text-center transition-all ${dragActive ? 'border-primary bg-primary/5 scale-[0.99]' : 'border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400'}`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
@@ -187,8 +187,8 @@ export default function UploadPayroll() {
 
       {/* Processing Steps View (Horizontal Stepper) */}
       {step >= 2 && (
-        <div className="bg-white border border-slate-200 rounded-sm p-8 shadow-sm mt-6 overflow-x-auto scrollbar-hide">
-          <div className="relative min-w-[600px] max-w-4xl mx-auto">
+        <div className="mt-8 mb-4 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+          <div className="relative min-w-[500px] max-w-3xl mx-auto">
             {/* Connecting Lines */}
             <div className="absolute top-[14px] left-[12%] right-[12%] flex z-0">
                <div className="h-[2px] flex-1 bg-emerald-200"></div>
@@ -264,7 +264,7 @@ export default function UploadPayroll() {
           
           {/* Validation Errors UI Block */}
           {errorRecords.length > 0 && (
-            <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
+            <div className="bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm overflow-hidden -mx-4 md:mx-0">
               <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
                 <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
                   <Warning className="w-4 h-4 text-rose-500" /> Validation Errors
@@ -281,7 +281,7 @@ export default function UploadPayroll() {
             </div>
           )}
 
-          <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
+          <div className="bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm overflow-hidden -mx-4 md:mx-0">
             <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
               <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
                 <FileCsv className="w-4 h-4 text-slate-500" /> Validation Preview Table

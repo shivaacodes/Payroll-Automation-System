@@ -47,7 +47,7 @@ export default function Toast({ show, onClose, title, description, variant = 'su
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 50 }}
-          className={`fixed bottom-6 right-6 border shadow-lg rounded-sm p-4 flex items-start gap-3 z-50 max-w-sm ${s.wrapper}`}
+          className={`fixed bottom-4 left-4 right-4 md:left-auto md:bottom-6 md:right-6 border shadow-lg rounded-sm p-4 flex items-start gap-3 z-50 md:max-w-sm ${s.wrapper}`}
         >
           {s.icon}
           <div className="flex-1">

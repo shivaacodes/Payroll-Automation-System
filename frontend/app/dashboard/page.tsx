@@ -90,7 +90,7 @@ export default function DashboardOverview() {
       <div className="grid grid-cols-1 gap-6">
         
         {/* Recent Jobs Table */}
-        <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden flex flex-col">
+        <div className="bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm overflow-hidden flex flex-col -mx-4 md:mx-0">
           <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
             <h3 className="text-sm font-semibold text-slate-800">Recent Jobs</h3>
             <Link href="/dashboard/jobs" className="text-xs font-medium text-primary hover:underline">View all</Link>

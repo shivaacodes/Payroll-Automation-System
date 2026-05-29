@@ -152,9 +152,9 @@ export default function ProcessingJobs() {
         )}
       </div>
 
-      {/* Active Pipeline Terminal */}
-      <div className="bg-slate-900 rounded-sm overflow-hidden flex flex-col shadow-sm border border-slate-800">
-        <div className="px-4 py-2 bg-slate-950 border-b border-slate-800 flex justify-between items-center text-slate-400">
+        {/* Live Terminal Component */}
+        <div className="bg-slate-900 rounded-sm shadow-xl border border-slate-700 overflow-hidden mt-6">
+          <div className="bg-slate-800 px-4 py-2 border-b border-slate-700 flex justify-between items-center text-slate-400">
           <div className="flex items-center gap-2 text-xs font-mono">
             <TerminalWindow className="w-4 h-4" />
             <span>worker_node_01 / active</span>
@@ -163,9 +163,8 @@ export default function ProcessingJobs() {
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live
           </span>
         </div>
-        
-        <div className="p-5 font-mono text-xs md:text-sm text-slate-300 space-y-3">
-          <div className="flex items-start gap-4 text-slate-500 italic">
+                <div className="p-3 md:p-5 h-64 overflow-y-auto font-mono text-xs text-slate-300 space-y-1">
+            <div className="flex items-start gap-4 text-slate-500 italic">
             {liveJobs.some(j => j.status === 'active') ? (
               <span className="text-emerald-400 animate-pulse">Processing active batches in background threads...</span>
             ) : (
@@ -176,9 +175,9 @@ export default function ProcessingJobs() {
       </div>
 
 
-      {/* Jobs Table */}
-      <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden flex flex-col">
-        <div className="overflow-x-auto">
+        {/* Job History Table */}
+        <div className="mt-8 bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm flex flex-col -mx-4 md:mx-0">
+          <div className="overflow-x-auto">
           <table className="w-full table-dense">
             <thead>
               <tr>

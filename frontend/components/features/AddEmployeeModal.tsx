@@ -48,8 +48,8 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-      <div className="bg-white rounded-sm shadow-xl w-full max-w-md border border-slate-200 flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/50 backdrop-blur-sm">
+      <div className="bg-white rounded-t-xl sm:rounded-sm shadow-xl w-full max-w-md border border-slate-200 flex flex-col max-h-[90vh] sm:max-h-none overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-200 flex justify-between items-center">
           <h3 className="font-semibold text-slate-900">Add Employee</h3>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">

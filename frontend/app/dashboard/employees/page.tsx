@@ -170,8 +170,8 @@ export default function EmployeesDirectory() {
         </div>
       )}
 
-      {/* Employees Table */}
-      <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden flex flex-col">
+      {/* Employee List Table */}
+      <div className="bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm flex flex-col -mx-4 md:mx-0 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full table-dense">
             <thead>
