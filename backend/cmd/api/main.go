@@ -37,7 +37,9 @@ func main() {
 	app.Post("/api/upload", handlers.HandleCSVUpload)
 
 	app.Post("/api/employees", handlers.CreateEmployee)
+	app.Post("/api/employees/bulk", handlers.BulkUploadEmployees)
 	app.Get("/api/employees", handlers.GetEmployees)
+	app.Delete("/api/employees", handlers.ClearAllEmployees)
 	app.Delete("/api/employees/:id", handlers.DeleteEmployee)
 
 	app.Post("/api/jobs/start", handlers.StartPayrollJob)

@@ -34,7 +34,7 @@ func StartPayrollJob(c *fiber.Ctx) error {
 	db.DB.Create(&batch)
 
 	//push to queue
-	for _, rec := range payload.Records {
+	for i, rec := range payload.Records {
 		var emp models.Employee
 		if err := db.DB.Where("employee_id = ?", rec.EmployeeID).First(&emp).Error; err != nil {
 			db.DB.Model(&models.JobBatch{}).Where("id = ?", batchID).UpdateColumn("failed_count", gorm.Expr("failed_count + ?", 1))
@@ -43,6 +43,7 @@ func StartPayrollJob(c *fiber.Ctx) error {
 
 		workers.JobQueue <- workers.JobPayload{
 			BatchID:  batchID,
+			JobIndex: i,
 			Employee: emp,
 			Entry: models.PayrollEntry{
 				MonthYear:  rec.MonthYear,
@@ -77,7 +78,6 @@ func DeleteJob(c *fiber.Ctx) error {
 
 // delete all batch history
 func ClearAllJobs(c *fiber.Ctx) error {
-	// Note: 1 = 1 is a GORM trick to delete all rows without a WHERE clause
 	result := db.DB.Where("1 = 1").Delete(&models.JobBatch{})
 
 	if result.Error != nil {
