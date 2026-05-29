@@ -1,6 +1,7 @@
 package pdf
 
 import (
+	_ "embed"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,18 +12,23 @@ import (
 	"github.com/jung-kurt/gofpdf"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
+	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
 
+//go:embed fonts/Roboto-Regular.ttf
+var robotoFont []byte
+
 func formatRupee(amount float64) string {
 	p := message.NewPrinter(language.Make("en-IN"))
-	return p.Sprintf("Rs %.2f", amount)
+	return p.Sprintf("₹ %.2f", amount)
 }
 
 // create salary slip pdf ui
 func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (string, error) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.AddUTF8FontFromBytes("Roboto", "", robotoFont)
 	pdf.AddPage()
 
 	pdf.SetFont("Arial", "B", 24)
@@ -70,10 +76,15 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	pdf.SetFont("Arial", "", 12)
 	pdf.SetTextColor(0, 0, 0)
 	pdf.SetX(15)
-	pdf.Cell(90, 8, emp.Designation)
+	
+	// Title case the designation
+	titleCaser := cases.Title(language.English)
+	formattedDesignation := titleCaser.String(emp.Designation)
+	
+	pdf.Cell(90, 8, formattedDesignation)
 	pdf.Cell(90, 8, emp.Email)
 
-	pdf.Ln(20)
+	pdf.Ln(30) // Increased padding before Earnings table
 	pdf.SetDrawColor(220, 220, 220)
 	pdf.SetLineWidth(0.2)
 
@@ -88,7 +99,7 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 
 	pdf.Ln(5)
 
-	pdf.SetFont("Arial", "", 11)
+	pdf.SetFont("Roboto", "", 11)
 	pdf.SetTextColor(0, 0, 0)
 
 	pdf.SetX(15)
@@ -114,15 +125,37 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	pdf.CellFormat(60, 10, "", "B", 0, "L", false, 0, "")
 	pdf.CellFormat(25, 10, "", "B", 1, "R", false, 0, "")
 
-	pdf.Ln(15)
+	pdf.Ln(5)
+	
+	// Subtotals
+	totalEarnings := entry.BaseSalary + entry.HRA + entry.Allowances
+	totalDeductions := entry.Deductions
+
+	pdf.SetX(15)
+	pdf.SetFont("Roboto", "B", 11) // Use Roboto for Rupee in subtotals
+	pdf.CellFormat(60, 10, "Total Earnings", "", 0, "L", false, 0, "")
+	pdf.CellFormat(25, 10, formatRupee(totalEarnings), "", 0, "R", false, 0, "")
+	pdf.Cell(10, 10, "")
+	pdf.CellFormat(60, 10, "Total Deductions", "", 0, "L", false, 0, "")
+	pdf.SetTextColor(235, 10, 30)
+	pdf.CellFormat(25, 10, formatRupee(totalDeductions), "", 1, "R", false, 0, "")
+	pdf.SetTextColor(0, 0, 0)
+
+	pdf.Ln(5)
 	pdf.SetX(110)
 	pdf.SetDrawColor(0, 0, 0)
 	pdf.SetLineWidth(0.5)
 
 	pdf.SetFont("Arial", "B", 12)
 	pdf.CellFormat(40, 15, "NET PAYABLE", "T B", 0, "L", false, 0, "")
-	pdf.SetFont("Arial", "B", 14)
+	pdf.SetFont("Roboto", "B", 14) // Use Roboto for Rupee in total
 	pdf.CellFormat(45, 15, formatRupee(entry.NetSalary), "T B", 1, "R", false, 0, "")
+
+	// Disclaimer
+	pdf.SetY(280)
+	pdf.SetFont("Arial", "", 9)
+	pdf.SetTextColor(150, 150, 150)
+	pdf.CellFormat(0, 10, "This is a system-generated document and does not require a physical signature.", "", 0, "C", false, 0, "")
 
 	// save
 	tempRawPath := filepath.Join(os.TempDir(), fmt.Sprintf("%s_raw.pdf", emp.EmployeeID))
