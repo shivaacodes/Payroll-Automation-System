@@ -72,6 +72,8 @@ export function useJobs() {
 
   useEffect(() => {
     loadJobs();
+    const interval = setInterval(loadJobs, 2500);
+    return () => clearInterval(interval);
   }, [loadJobs]);
 
   const deleteJob = async (id: string) => {

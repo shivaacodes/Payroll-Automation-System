@@ -99,7 +99,7 @@ export default function LandingPage() {
           </div>
           <div className="w-full max-w-6xl mx-auto p-4">
             <img 
-              src="/payroll-architecture diagram.png" 
+              src="/payroll-architecture-diagram.png" 
               alt="Payroll Architecture Diagram" 
               className="w-full h-auto object-contain" 
             />
