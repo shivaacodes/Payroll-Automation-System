@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   Plus,
   Spinner,
@@ -8,57 +8,26 @@ import {
 } from '@phosphor-icons/react/dist/ssr';
 import AddEmployeeModal from '@/components/features/AddEmployeeModal';
 import Toast from '@/components/ui/Toast';
-
-type Employee = {
-  ID: number;
-  EmployeeID: string;
-  Name: string;
-  Email: string;
-  Designation: string;
-  DOBYear: string;
-};
+import { useEmployees } from '@/hooks/useEmployees';
 
 export default function EmployeesDirectory() {
+  const { employees, loading, error, deleteEmployee, clearAllEmployees, refresh } = useEmployees();
   const [showModal, setShowModal] = useState(false);
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null); // for confirm toast
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [successToast, setSuccessToast] = useState('');
   const [deleteToast, setDeleteToast] = useState(false);
 
-  const fetchEmployees = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/employees`);
-      const data = await res.json();
-      if (res.ok) {
-        setEmployees(data.data || []);
-      } else {
-        throw new Error(data.error || 'Failed to fetch employees');
-      }
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
-
   const handleModalSuccess = () => {
     setShowModal(false);
-    fetchEmployees();
+    refresh();
     setSuccessToast('Employee added to the master database successfully.');
     setTimeout(() => setSuccessToast(''), 3500);
   };
 
   const handleDelete = async (employeeID: string) => {
-    setPendingDeleteId(employeeID); // Show the confirm toast instead of browser popup
+    setPendingDeleteId(employeeID);
   };
 
   const confirmDelete = async () => {
@@ -67,19 +36,11 @@ export default function EmployeesDirectory() {
     setPendingDeleteId(null);
     setDeletingId(employeeID);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}`}/api/employees/${employeeID}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) {
-        setEmployees(prev => prev.filter(e => e.EmployeeID !== employeeID));
-        setDeleteToast(true);
-        setTimeout(() => setDeleteToast(false), 3000);
-      } else {
-        const data = await res.json();
-        setError(data.error || 'Failed to delete employee');
-      }
+      await deleteEmployee(employeeID);
+      setDeleteToast(true);
+      setTimeout(() => setDeleteToast(false), 3000);
     } catch {
-      setError('Could not connect to server');
+      // Error handled by hook theoretically, or can be caught
     } finally {
       setDeletingId(null);
     }
@@ -88,16 +49,11 @@ export default function EmployeesDirectory() {
   const executeClearAll = async () => {
     setShowClearConfirm(false);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/employees`, { method: 'DELETE' });
-      if (res.ok) {
-        setEmployees([]);
-        setDeleteToast(true);
-        setTimeout(() => setDeleteToast(false), 3000);
-      } else {
-        setError('Failed to clear employees');
-      }
+      await clearAllEmployees();
+      setDeleteToast(true);
+      setTimeout(() => setDeleteToast(false), 3000);
     } catch {
-      setError('Could not connect to server');
+      // Error handled
     }
   };
 

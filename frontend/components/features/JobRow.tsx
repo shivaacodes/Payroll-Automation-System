@@ -9,20 +9,10 @@ import {
   Trash
 } from '@phosphor-icons/react/dist/ssr';
 
-export interface JobData {
-  id: string;
-  batchId: string;
-  totalRecords: number;
-  status: 'active' | 'failed' | 'completed';
-  completedCount: number;
-  failedCount: number;
-  startedAt: string;
-  progressText?: string;
-  logs?: React.ReactNode;
-}
+import { Job } from '@/hooks/useJobs';
 
 interface JobRowProps {
-  job: JobData;
+  job: Job;
   isExpanded: boolean;
   onToggle: () => void;
   onDelete: () => void;
@@ -100,7 +90,17 @@ export default function JobRow({ job, isExpanded, onToggle, onDelete }: JobRowPr
                   <span className={`text-lg font-mono ${job.failedCount > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{job.failedCount}</span>
                 </div>
                 <div className="bg-slate-900 border border-slate-800 p-3 rounded-sm shadow-sm font-mono text-[10px] h-16 overflow-y-auto">
-                  {job.logs}
+                  <div className="text-slate-400">
+                    {job.status !== 'active' ? (
+                      <div className={job.failedCount > 0 ? 'text-rose-400' : 'text-emerald-400'}>
+                        [SYSTEM] Batch completed. {job.completedCount} success, {job.failedCount} failed.
+                      </div>
+                    ) : (
+                      <div className="text-emerald-400 animate-pulse">
+                        [SYSTEM] Background workers processing {job.totalRecords - (job.completedCount + job.failedCount)} remaining records...
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

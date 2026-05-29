@@ -3,14 +3,14 @@
 import React, { useState } from 'react';
 import { 
   CloudArrowUp, 
+  FileCsv, 
+  DownloadSimple, 
   CheckCircle, 
-  FileMagnifyingGlass,
-  Play,
-  FileCsv,
-  DownloadSimple,
-  Warning,
-  Spinner
+  Warning, 
+  Spinner,
+  Play
 } from '@phosphor-icons/react/dist/ssr';
+import { API_BASE_URL } from '@/lib/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Toast from '@/components/ui/Toast';
@@ -91,7 +91,7 @@ export default function UploadPayroll() {
 
     try {
       // Send the file to our Go Fiber Backend
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/upload`, {
+      const res = await fetch(`${API_BASE_URL}/api/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -125,7 +125,7 @@ export default function UploadPayroll() {
     if (validRecords.length === 0) return;
     setProcessing(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/jobs/start`, {
+      const res = await fetch(`${API_BASE_URL}/api/jobs/start`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ records: validRecords })

@@ -1,105 +1,49 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Eye, DownloadSimple, PaperPlaneRight, FileText, CheckCircle, Warning, Clock, Spinner, Trash } from '@phosphor-icons/react/dist/ssr';
+import React, { useState } from 'react';
+import { Eye, DownloadSimple, PaperPlaneRight, FileText, Spinner, Trash } from '@phosphor-icons/react/dist/ssr';
 import Toast from '@/components/ui/Toast';
-
-interface Report {
-  id: number;
-  employeeId: string;
-  name: string;
-  monthYear: string;
-  netSalary: number;
-  status: string;
-}
+import Badge from '@/components/ui/Badge';
+import { useReports } from '@/hooks/useReports';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function ReportsPage() {
-  const [reports, setReports] = useState<Report[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { reports, loading, resendingId, resendEmail, deleteReport, clearAllReports } = useReports();
   const [toastMsg, setToastMsg] = useState('');
   const [toastVar, setToastVar] = useState<'success' | 'danger'>('success');
-  const [resendingId, setResendingId] = useState<number | null>(null);
-
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/reports`);
-        if (res.ok) {
-          const data = await res.json();
-          setReports(data || []);
-        }
-      } catch (err) {
-        console.error('Failed to fetch reports');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchReports();
-  }, []);
 
   const handleResend = async (id: number) => {
-    setResendingId(id);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/reports/${id}/resend`, { method: 'POST' });
-      if (res.ok) {
-        setToastVar('success');
-        setToastMsg('Payslip successfully resent via email.');
-      } else {
-        setToastVar('danger');
-        setToastMsg('Failed to resend payslip.');
-      }
+      await resendEmail(id);
+      setToastVar('success');
+      setToastMsg('Payslip successfully resent. Please check your spam folder.');
     } catch (err) {
       setToastVar('danger');
-      setToastMsg('Network error occurred.');
-    } finally {
-      setResendingId(null);
+      setToastMsg('Failed to resend payslip.');
     }
   };
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this report?')) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/reports/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setReports(reports.filter(r => r.id !== id));
-        setToastVar('success');
-        setToastMsg('Report deleted.');
-      } else {
-        setToastVar('danger');
-        setToastMsg('Failed to delete report.');
-      }
+      await deleteReport(id);
+      setToastVar('success');
+      setToastMsg('Report deleted.');
     } catch (err) {
       setToastVar('danger');
-      setToastMsg('Network error.');
+      setToastMsg('Failed to delete report.');
     }
   };
 
   const handleClearAll = async () => {
     if (!window.confirm('Are you sure you want to clear ALL reports? This action cannot be undone.')) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/reports`, { method: 'DELETE' });
-      if (res.ok) {
-        setReports([]);
-        setToastVar('success');
-        setToastMsg('All reports cleared.');
-      } else {
-        setToastVar('danger');
-        setToastMsg('Failed to clear reports.');
-      }
+      await clearAllReports();
+      setToastVar('success');
+      setToastMsg('All reports cleared.');
     } catch (err) {
       setToastVar('danger');
-      setToastMsg('Network error.');
-    }
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200"><CheckCircle className="w-3.5 h-3.5" weight="fill" /> Sent</span>;
-      case 'failed':
-        return <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-100 text-rose-800 border border-rose-200"><Warning className="w-3.5 h-3.5" weight="fill" /> Failed</span>;
-      default:
-        return <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200"><Clock className="w-3.5 h-3.5" weight="fill" /> Processing</span>;
+      setToastMsg('Failed to clear reports.');
     }
   };
 
@@ -163,11 +107,11 @@ export default function ReportsPage() {
                     <td className="font-medium text-slate-900">{report.name} <span className="text-xs text-slate-400 block font-normal">{report.employeeId}</span></td>
                     <td className="text-slate-600 uppercase text-xs font-semibold tracking-wider">{report.monthYear}</td>
                     <td className="text-slate-900 font-medium">₹ {report.netSalary.toLocaleString('en-IN')}</td>
-                    <td>{getStatusBadge(report.status)}</td>
+                    <td><Badge status={report.status === 'completed' ? 'Sent' : (report.status.charAt(0).toUpperCase() + report.status.slice(1))} variant={report.status === 'completed' ? 'success' : undefined} /></td>
                     <td>
                       <div className="flex items-center justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                         <a 
-                          href={`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/reports/${report.id}/pdf?action=preview`}
+                          href={`${API_BASE_URL}/api/reports/${report.id}/pdf?action=preview`}
                           target="_blank"
                           rel="noopener noreferrer"
                           title="Preview PDF (Requires Password)"
@@ -176,7 +120,7 @@ export default function ReportsPage() {
                           <Eye className="w-5 h-5" />
                         </a>
                         <a 
-                          href={`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/reports/${report.id}/pdf?action=download`}
+                          href={`${API_BASE_URL}/api/reports/${report.id}/pdf?action=download`}
                           title="Download PDF"
                           className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-sm transition-colors"
                         >

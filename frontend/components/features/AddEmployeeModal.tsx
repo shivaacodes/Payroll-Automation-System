@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, Spinner } from '@phosphor-icons/react/dist/ssr';
+import { X, Spinner, User, EnvelopeSimple, Briefcase, CalendarBlank, IdentificationCard } from '@phosphor-icons/react/dist/ssr';
+import { API_BASE_URL } from '@/lib/api';
 
 interface AddEmployeeModalProps {
   onClose: () => void;
@@ -27,7 +28,7 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
     setError('');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/employees`, {
+      const res = await fetch(`${API_BASE_URL}/api/employees`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

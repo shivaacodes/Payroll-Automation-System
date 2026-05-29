@@ -6,10 +6,14 @@ import {
   CircleNotch, 
   EnvelopeSimple,
   ArrowRight,
-  Database
+  Database,
+  FileText,
+  CheckCircle,
+  Warning
 } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 import StatCard from '@/components/ui/StatCard';
+import { fetchJSON } from '@/lib/api';
 
 export default function DashboardOverview() {
   const [stats, setStats] = useState({
@@ -24,11 +28,14 @@ export default function DashboardOverview() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/dashboard/stats`);
-        if (res.ok) {
-          const data = await res.json();
-          setStats(data);
-        }
+        const data = await fetchJSON('/api/stats');
+        setStats({
+          totalEmployees: data.totalEmployees || 0,
+          emailsSent: data.totalReports || 0,
+          failedDeliveries: data.failedReports || 0,
+          currentBatch: data.currentBatch || '-',
+          recentJobs: data.recentJobs || []
+        });
       } catch (err) {
         console.error('Failed to fetch dashboard stats');
       } finally {
