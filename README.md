@@ -18,11 +18,11 @@ Rather than relying on heavy message brokers (like RabbitMQ or Redis) for backgr
 
 ![System Architecture](frontend/public/payroll-architecture-diagram.png)
 
-## Database Schema
+## Database Schema (PostgreSQL + Supabase)
 
 The relational schema is highly normalized. By decoupling the Employee from the PayrollEntry, the system runs recurring monthly payroll without duplicating static PII data. 
 
-![Database Schema](frontend/public/database-schema.png)
+![Database Schema](database-image)
 
 ## Security Posture
 
