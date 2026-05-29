@@ -50,6 +50,8 @@ func main() {
 	app.Get("/api/reports", handlers.GetReports)
 	app.Get("/api/reports/:id/pdf", handlers.GetPayslipPDF)
 	app.Post("/api/reports/:id/resend", handlers.ResendPayslip)
+	app.Delete("/api/reports/:id", handlers.DeleteReport)
+	app.Delete("/api/reports", handlers.ClearReports)
 
 	port := os.Getenv("PORT")
 	if port == "" {

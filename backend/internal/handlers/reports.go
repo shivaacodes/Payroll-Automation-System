@@ -93,3 +93,20 @@ func ResendPayslip(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{"message": "Email resent successfully"})
 }
+
+func DeleteReport(c *fiber.Ctx) error {
+	id := c.Params("id")
+	result := db.DB.Where("id = ?", id).Delete(&models.PayrollEntry{})
+	if result.Error != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to delete report"})
+	}
+	return c.JSON(fiber.Map{"message": "Report deleted successfully"})
+}
+
+func ClearReports(c *fiber.Ctx) error {
+	result := db.DB.Where("1 = 1").Delete(&models.PayrollEntry{})
+	if result.Error != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to clear reports"})
+	}
+	return c.JSON(fiber.Map{"message": "All reports cleared"})
+}

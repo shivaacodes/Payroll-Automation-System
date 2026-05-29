@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Eye, DownloadSimple, PaperPlaneRight, FileText, CheckCircle, Warning, Clock, Spinner } from '@phosphor-icons/react/dist/ssr';
+import { Eye, DownloadSimple, PaperPlaneRight, FileText, CheckCircle, Warning, Clock, Spinner, Trash } from '@phosphor-icons/react/dist/ssr';
 import Toast from '@/components/ui/Toast';
 
 interface Report {
@@ -56,6 +56,42 @@ export default function ReportsPage() {
     }
   };
 
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this report?')) return;
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/reports/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setReports(reports.filter(r => r.id !== id));
+        setToastVar('success');
+        setToastMsg('Report deleted.');
+      } else {
+        setToastVar('danger');
+        setToastMsg('Failed to delete report.');
+      }
+    } catch (err) {
+      setToastVar('danger');
+      setToastMsg('Network error.');
+    }
+  };
+
+  const handleClearAll = async () => {
+    if (!window.confirm('Are you sure you want to clear ALL reports? This action cannot be undone.')) return;
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080'}/api/reports`, { method: 'DELETE' });
+      if (res.ok) {
+        setReports([]);
+        setToastVar('success');
+        setToastMsg('All reports cleared.');
+      } else {
+        setToastVar('danger');
+        setToastMsg('Failed to clear reports.');
+      }
+    } catch (err) {
+      setToastVar('danger');
+      setToastMsg('Network error.');
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
@@ -81,6 +117,14 @@ export default function ReportsPage() {
         <div>
           <h2 className="text-xl font-semibold text-slate-900">Payslip Reports</h2>
         </div>
+        {reports.length > 0 && (
+          <button 
+            onClick={handleClearAll}
+            className="text-xs font-medium bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 px-3 py-1.5 rounded-sm transition-colors border border-rose-200 flex items-center gap-1.5 shadow-sm"
+          >
+            <Trash className="w-3.5 h-3.5" /> Clear All
+          </button>
+        )}
       </div>
 
       {/* Reports Table */}
@@ -145,6 +189,13 @@ export default function ReportsPage() {
                           className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-sm transition-colors disabled:opacity-50"
                         >
                           {resendingId === report.id ? <Spinner className="w-5 h-5 animate-spin text-blue-600" /> : <PaperPlaneRight className="w-5 h-5" />}
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(report.id)}
+                          title="Delete Report"
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm transition-colors"
+                        >
+                          <Trash className="w-5 h-5" />
                         </button>
                       </div>
                     </td>
