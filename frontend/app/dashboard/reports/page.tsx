@@ -80,7 +80,6 @@ export default function ReportsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">Payslip Reports</h2>
-          <p className="text-sm text-slate-500 mt-1">View, download, and resend generated salary slips.</p>
         </div>
       </div>
 

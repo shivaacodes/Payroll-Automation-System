@@ -33,6 +33,7 @@ export default function UploadPayroll() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [rawPreview, setRawPreview] = useState<string[][] | null>(null);
   const router = useRouter();
 
   const handleDrag = (e: React.DragEvent) => {
@@ -50,24 +51,43 @@ export default function UploadPayroll() {
     e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      processUpload(e.dataTransfer.files[0]);
+      handleFileSelection(e.dataTransfer.files[0]);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
-      processUpload(e.target.files[0]);
+      handleFileSelection(e.target.files[0]);
     }
   };
 
-  const processUpload = async (uploadedFile: File) => {
+  const handleFileSelection = (uploadedFile: File) => {
     setFile(uploadedFile);
-    setStep(2); // Move to validating step
     setUploadError(null);
     
+    // Read raw CSV to show preview before validating
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      if (text) {
+        const lines = text.split('\n').filter(l => l.trim() !== '');
+        // Preview first 6 lines
+        const previewLines = lines.slice(0, 6).map(l => l.split(','));
+        setRawPreview(previewLines);
+      }
+    };
+    reader.readAsText(uploadedFile);
+  };
+
+  const processUpload = async () => {
+    if (!file) return;
+    setStep(2); // Move to validating step
+    setUploadError(null);
+    setRawPreview(null);
+    
     const formData = new FormData();
-    formData.append('file', uploadedFile);
+    formData.append('file', file);
 
     try {
       // Send the file to our Go Fiber Backend
@@ -182,6 +202,55 @@ export default function UploadPayroll() {
               <DownloadSimple className="w-4 h-4" /> Download Sample CSV
             </a>
           </div>
+          
+          {/* Raw CSV Preview */}
+          {rawPreview && (
+            <div className="bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm overflow-hidden -mx-4 md:mx-0 mt-6 flex flex-col">
+              <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+                <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                  <FileCsv className="w-4 h-4 text-slate-500" /> Raw CSV Preview (First 5 Rows)
+                </h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full table-dense">
+                  <thead>
+                    <tr>
+                      {rawPreview[0].map((header, idx) => (
+                        <th key={idx}>{header}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rawPreview.slice(1).map((row, rowIdx) => (
+                      <tr key={rowIdx}>
+                        {row.map((cell, cellIdx) => (
+                          <td key={cellIdx} className="font-mono text-xs">{cell}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
+                <button 
+                  onClick={() => {
+                    setFile(null);
+                    setRawPreview(null);
+                  }}
+                  className="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-sm font-medium text-sm hover:bg-slate-50 transition-colors shadow-sm"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={processUpload}
+                  className="bg-primary text-white px-4 py-2 rounded-sm font-medium text-sm transition-colors shadow-sm hover:bg-violet-800"
+                >
+                  Validate Data
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
       )}
 
