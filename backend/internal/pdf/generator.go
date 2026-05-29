@@ -17,19 +17,14 @@ import (
 	"golang.org/x/text/message"
 )
 
-var robotoFont []byte
-var robotoBoldFont []byte
-
 func formatRupee(amount float64) string {
 	p := message.NewPrinter(language.Make("en-IN"))
-	return p.Sprintf("₹ %.2f", amount)
+	return p.Sprintf("INR %.2f", amount)
 }
 
 // create salary slip pdf ui
 func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (string, error) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
-	pdf.AddUTF8FontFromBytes("Roboto", "", robotoFont)
-	pdf.AddUTF8FontFromBytes("Roboto", "B", robotoBoldFont)
 	pdf.AddPage()
 
 	pdf.SetFont("Arial", "B", 24)
@@ -99,7 +94,7 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 
 	pdf.Ln(5)
 
-	pdf.SetFont("Roboto", "", 11)
+	pdf.SetFont("Arial", "", 11)
 	pdf.SetTextColor(0, 0, 0)
 
 	pdf.SetX(15)
@@ -131,7 +126,7 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	totalDeductions := entry.Deductions
 
 	pdf.SetX(15)
-	pdf.SetFont("Roboto", "B", 11) // Use Roboto for Rupee in subtotals
+	pdf.SetFont("Arial", "B", 11)
 	pdf.CellFormat(60, 10, "Total Earnings", "", 0, "L", false, 0, "")
 	pdf.CellFormat(25, 10, formatRupee(totalEarnings), "", 0, "R", false, 0, "")
 	pdf.Cell(10, 10, "")
@@ -147,7 +142,7 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 
 	pdf.SetFont("Arial", "B", 12)
 	pdf.CellFormat(40, 15, "NET PAYABLE", "T B", 0, "L", false, 0, "")
-	pdf.SetFont("Roboto", "B", 14)
+	pdf.SetFont("Arial", "B", 14)
 	pdf.CellFormat(45, 15, formatRupee(entry.NetSalary), "T B", 1, "R", false, 0, "")
 
 	pdf.SetY(265)
