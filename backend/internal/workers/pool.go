@@ -42,10 +42,16 @@ func worker(workerID int) {
 			}
 		}
 
+		job.Entry.EmployeeID = job.Employee.EmployeeID
+
 		// Atomic database updates so we don't get race conditions between workers
 		if success {
+			job.Entry.Status = "completed"
+			db.DB.Create(&job.Entry)
 			db.DB.Model(&models.JobBatch{}).Where("id = ?", job.BatchID).UpdateColumn("completed_count", gorm.Expr("completed_count + ?", 1))
 		} else {
+			job.Entry.Status = "failed"
+			db.DB.Create(&job.Entry)
 			db.DB.Model(&models.JobBatch{}).Where("id = ?", job.BatchID).UpdateColumn("failed_count", gorm.Expr("failed_count + ?", 1))
 		}
 	}
