@@ -1,5 +1,11 @@
 # Payroll Automation System
 
+![Go Version](https://img.shields.io/badge/Go-1.23-00ADD8?style=flat&logo=go)
+![Next.js Version](https://img.shields.io/badge/Next.js-15.0-000000?style=flat&logo=next.js)
+![React Version](https://img.shields.io/badge/React-19.0-61DAFB?style=flat&logo=react&logoColor=black)
+![PostgreSQL Version](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat&logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)
+
 An enterprise-grade, end-to-end payroll processing and dispatch platform built for stability, security, and velocity. This system ingests CSV employee data, concurrently generates AES-256 encrypted PDF salary slips, and dispatches them via SendGrid, all while providing real-time UI tracking through a decoupled React dashboard.
 
 ## Processing Pipeline
@@ -20,7 +26,7 @@ The relational schema is highly normalized. By decoupling the Employee from the 
 
 ## Security Posture
 
-1. **Military-Grade Document Security:** Salary slips are generated and encrypted locally in memory using `pdfcpu`. They are locked with AES-256 encryption.
+1. **Document Security:** Salary slips are generated and encrypted locally in memory using `pdfcpu`. They are locked with AES-256 encryption.
 2. **Dynamic Passwords:** PDF passwords rely on a combination of the employee's First Name and Birth Year (e.g., `Shiva2004`).
 3. **Atomic Transactions:** Concurrent background workers use atomic database operations (`gorm.Expr`) to prevent race conditions during state updates.
 
@@ -64,7 +70,7 @@ docker compose down
 ```
 
 ## Tech Stack
-- **Frontend:** Next.js (App Router), React, TailwindCSS, Phosphor Icons.
+- **Frontend:** Next.js (App Router), React, TailwindCSS.
 - **Backend:** Go, Fiber, GORM, `pdfcpu`, `gofpdf`.
 - **Database:** PostgreSQL.
 - **Infrastructure:** Docker, Docker Compose (Multi-stage builds for minimal container sizes).
