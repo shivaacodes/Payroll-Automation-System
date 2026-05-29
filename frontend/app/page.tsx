@@ -87,13 +87,18 @@ export default function LandingPage() {
         {/* 3. Database Schema */}
         <section id="schema" className="pt-12 border-t border-slate-200 min-h-[400px]">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">Database Schema</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">Database Schema (PostgreSQL + Supabase)</h2>
           </div>
-          <div className="w-full max-w-4xl mx-auto p-4">
+          <div className="w-full max-w-4xl mx-auto p-4 space-y-12">
             <img 
               src="/database-schema.png" 
               alt="Database Schema Diagram" 
               className="w-full h-auto object-contain drop-shadow-sm" 
+            />
+            <img 
+              src="/database-image.png" 
+              alt="Live Supabase Screenshot" 
+              className="w-full h-auto object-contain rounded-md border border-slate-200 shadow-sm" 
             />
           </div>
         </section>

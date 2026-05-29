@@ -22,7 +22,11 @@ Rather than relying on heavy message brokers (like RabbitMQ or Redis) for backgr
 
 The relational schema is highly normalized. By decoupling the Employee from the PayrollEntry, the system runs recurring monthly payroll without duplicating static PII data. 
 
-![Database Schema](database-image)
+### Entity Relationship Diagram
+![Database Schema](frontend/public/database-schema.png)
+
+### Live Supabase Database
+![Supabase Screenshot](frontend/public/database-image.png)
 
 ## Security Posture
 
