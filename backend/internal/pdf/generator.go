@@ -6,12 +6,13 @@ import (
 	"path/filepath"
 	"strings"
 
+	"payroll-backend/internal/models"
+
 	"github.com/jung-kurt/gofpdf"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
-	"payroll-backend/internal/models"
 )
 
 func formatRupee(amount float64) string {
@@ -135,7 +136,7 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	password := fmt.Sprintf("%s%s", firstName, emp.DOBYear)
 
 	finalPath := filepath.Join(os.TempDir(), fmt.Sprintf("%s_salary_slip.pdf", emp.EmployeeID))
-	
+
 	conf := model.NewAESConfiguration(password, password, 256)
 	err = api.EncryptFile(tempRawPath, finalPath, conf)
 
