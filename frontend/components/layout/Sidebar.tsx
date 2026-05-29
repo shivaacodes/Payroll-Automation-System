@@ -15,9 +15,9 @@ import {
 
 export const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: House },
+  { href: '/dashboard/employees', label: 'Employees', icon: Users },
   { href: '/dashboard/upload', label: 'Upload Payroll', icon: CloudArrowUp },
   { href: '/dashboard/jobs', label: 'Processing Jobs', icon: HardDrives },
-  { href: '/dashboard/employees', label: 'Employees', icon: Users },
   { href: '/dashboard/reports', label: 'Reports', icon: FileText },
 ];
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import { House, List, X } from '@phosphor-icons/react/dist/ssr';
+import { House, List, X, SignOut } from '@phosphor-icons/react/dist/ssr';
 import { navItems } from './Sidebar';
 import Link from 'next/link';
 
@@ -50,6 +50,16 @@ export default function Header() {
               </Link>
             );
           })}
+          <div className="border-t border-border mt-1 pt-1">
+            <Link 
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3 px-6 py-3 text-sm transition-colors text-slate-600 hover:bg-rose-50 hover:text-rose-600 border-l-4 border-transparent"
+            >
+              <SignOut className="w-5 h-5 shrink-0" />
+              Logout
+            </Link>
+          </div>
         </div>
       )}
     </header>

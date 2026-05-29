@@ -28,11 +28,11 @@ export default function DashboardOverview() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const data = await fetchJSON('/api/stats');
+        const data = await fetchJSON('/api/dashboard/stats');
         setStats({
           totalEmployees: data.totalEmployees || 0,
-          emailsSent: data.totalReports || 0,
-          failedDeliveries: data.failedReports || 0,
+          emailsSent: data.emailsSent || 0,
+          failedDeliveries: data.failedDeliveries || 0,
           currentBatch: data.currentBatch || '-',
           recentJobs: data.recentJobs || []
         });
@@ -43,7 +43,6 @@ export default function DashboardOverview() {
       }
     };
     fetchStats();
-    // Poll every 5 seconds to keep it fresh
     const interval = setInterval(fetchStats, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -129,7 +128,6 @@ export default function DashboardOverview() {
                   </tr>
                 ) : (
                   stats.recentJobs.map((job) => {
-                    // Normalize snake_case to camelCase depending on what Go returns
                     const completed = job.completed_count ?? job.completedCount ?? 0;
                     const failed = job.failed_count ?? job.failedCount ?? 0;
                     const total = job.total_records ?? job.totalRecords ?? 1;
