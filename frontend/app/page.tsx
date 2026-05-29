@@ -89,7 +89,13 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">Database Schema</h2>
           </div>
-          {/* Placeholder for future schema diagram */}
+          <div className="w-full max-w-6xl mx-auto p-4">
+            <img 
+              src="/database-schema.png" 
+              alt="Database Schema Diagram" 
+              className="w-full h-auto object-contain" 
+            />
+          </div>
         </section>
 
         {/* 4. Architecture Section */}
