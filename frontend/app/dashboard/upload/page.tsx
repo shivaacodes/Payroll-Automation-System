@@ -147,7 +147,7 @@ export default function UploadPayroll() {
         show={showToast}
         onClose={() => setShowToast(false)}
         title="Payroll Batch Dispatched!"
-        description={`${validRecords.length} salary slips are being generated and emailed in the background.`}
+        description={`${validRecords.length} salary slips are being generated and emailed. (Note: Please check your Spam/Junk folder if you don't see it).`}
       />
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

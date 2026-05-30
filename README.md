@@ -49,7 +49,7 @@ Create a `.env` file in the `backend/` directory if you wish to enable email dis
 SENDGRID_API_KEY=your_api_key_here
 SENDGRID_FROM_EMAIL=hr@company.com
 ```
-*(Note: If no SendGrid key is provided, the backend will safely skip the email step but will still generate the encrypted PDFs and process the jobs.)*
+*(Note: If no SendGrid key is provided, the backend will safely skip the email step but will still generate the encrypted PDFs and process the jobs. If testing with a real email, please check your **Spam/Junk folder** as transactional attachments may occasionally be filtered).*
 
 ### Running the Stack
 Use the provided runner script to spin up the entire multi-container environment:
