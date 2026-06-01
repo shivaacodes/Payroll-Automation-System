@@ -293,25 +293,7 @@ export default function UploadPayroll() {
       {step === 4 && (
         <div className="space-y-4 pt-2">
           
-          {/* Validation Errors UI Block */}
-          {errorRecords.length > 0 && (
-            <div className="bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm overflow-hidden -mx-4 md:mx-0">
-              <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
-                <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                  <Warning className="w-4 h-4 text-rose-500" /> Validation Errors
-                </h3>
-              </div>
-              <div className="p-4 bg-white text-sm">
-                <ul className="space-y-2 text-rose-600 font-mono text-xs">
-                  {errorRecords.map((err, idx) => (
-                    <li key={idx}><span className="font-semibold">{err.employeeId || 'Unknown Row'}:</span> {err.errorReason}</li>
-                  ))}
-                </ul>
-                <p className="text-xs text-slate-500 mt-3 italic">Fix these errors in your CSV and re-upload, or proceed to process only valid rows.</p>
-              </div>
-            </div>
-          )}
-
+          {/* Validation Preview Table */}
           <div className="bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm overflow-hidden -mx-4 md:mx-0">
             <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
               <div className="flex items-center gap-2">
@@ -376,6 +358,25 @@ export default function UploadPayroll() {
               </table>
             </div>
           </div>
+
+          {/* Validation Errors UI Block */}
+          {errorRecords.length > 0 && (
+            <div className="bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm overflow-hidden -mx-4 md:mx-0 mt-4">
+              <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+                <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                  <Warning className="w-4 h-4 text-rose-500" /> Validation Errors
+                </h3>
+              </div>
+              <div className="p-4 bg-white text-sm">
+                <ul className="space-y-2 text-rose-600 font-mono text-xs max-h-60 overflow-y-auto pr-2">
+                  {errorRecords.map((err, idx) => (
+                    <li key={idx}><span className="font-semibold">{err.employeeId || 'Unknown Row'}:</span> {err.errorReason}</li>
+                  ))}
+                </ul>
+                <p className="text-xs text-slate-500 mt-3 italic border-t border-slate-100 pt-3">Fix these errors in your CSV and re-upload, or proceed to process only valid rows.</p>
+              </div>
+            </div>
+          )}
 
           </div>
       )}
