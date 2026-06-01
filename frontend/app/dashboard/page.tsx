@@ -9,7 +9,8 @@ import {
   Database,
   FileText,
   CheckCircle,
-  Warning
+  Warning,
+  Info
 } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 import StatCard from '@/components/ui/StatCard';
@@ -69,6 +70,21 @@ export default function DashboardOverview() {
         <div>
           <span className="font-semibold block mb-0.5">Note</span>
           The Go backend API is deployed on Render free tier which goes to sleep after 15 minutes of inactivity. The initial dashboard load or first API call may take <strong>30-50 seconds</strong> to wake the server up.
+        </div>
+      </div>
+
+      {/* Evaluator Quick Start Guide */}
+      <div className="bg-indigo-50 border border-indigo-200 p-4 rounded-sm shadow-sm mx-4 md:mx-0">
+        <div className="flex items-start gap-3">
+          <Info weight="fill" className="w-5 h-5 shrink-0 mt-0.5 text-indigo-500" />
+          <div className="w-full">
+            <span className="font-semibold text-indigo-900 block mb-2 text-base">🧪 Evaluator Quick Start Guide</span>
+            <ul className="list-decimal list-inside text-sm text-indigo-800 space-y-1.5 marker:text-indigo-500">
+              <li><strong>Download Demo Data:</strong> Navigate to "New Payroll Run" and download the pre-formatted 50-employee CSV.</li>
+              <li><strong>Upload & Validate:</strong> Drag the CSV into the dropzone to trigger the instant "Fail-Fast" database validation.</li>
+              <li><strong>Process Payroll:</strong> Click Process and watch the 5-worker Go routine concurrently generate encrypted PDFs and dispatch emails.</li>
+            </ul>
+          </div>
         </div>
       </div>
 
