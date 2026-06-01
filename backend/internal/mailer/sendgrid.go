@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
+	"regexp"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -12,6 +13,11 @@ import (
 
 // email the password-protected PDF to the employees
 func SendSalarySlip(emp models.Employee, pdfPath string, month string) error {
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
+	if !emailRegex.MatchString(emp.Email) {
+		return fmt.Errorf("invalid email format: %s", emp.Email)
+	}
+
 	apiKey := os.Getenv("SENDGRID_API_KEY")
 	fromEmail := os.Getenv("SENDGRID_FROM_EMAIL")
 
