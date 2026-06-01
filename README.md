@@ -52,8 +52,23 @@ SENDGRID_FROM_EMAIL=hr@company.com
 *(Note: If no SendGrid key is provided, the backend will safely skip the email step but will still generate the encrypted PDFs and process the jobs. If testing with a real email, please check your **Spam/Junk folder** as transactional attachments may occasionally be filtered).*
 
 ### Running the Stack
-Use the provided runner script to spin up the entire multi-container environment:
 
+**1. Clone the repository:**
+```bash
+git clone https://github.com/shivaacodes/Payroll-Automation-System.git
+cd Payroll-Automation-System
+```
+
+**2. Start the Application:**
+The easiest way to start all required services (Frontend, Go Backend, and PostgreSQL) is using Docker Compose.
+
+```bash
+docker compose up --build -d
+```
+*(This command automatically pulls the images, builds the Go and Next.js containers, and spins up the isolated database in the background).*
+
+**Alternatively, for macOS/Linux users:**
+You can use the provided convenience wrapper script:
 ```bash
 chmod +x run.sh
 ./run.sh
