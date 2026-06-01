@@ -78,11 +78,13 @@ export default function DashboardOverview() {
         <div className="flex items-start gap-3">
           <Info weight="fill" className="w-5 h-5 shrink-0 mt-0.5 text-indigo-500" />
           <div className="w-full">
-            <span className="font-semibold text-indigo-900 block mb-2 text-base">🧪 Evaluator Quick Start Guide</span>
+            <span className="font-semibold text-indigo-900 block mb-2 text-base">How to Test</span>
             <ul className="list-decimal list-inside text-sm text-indigo-800 space-y-1.5 marker:text-indigo-500">
-              <li><strong>Download Demo Data:</strong> Navigate to "New Payroll Run" and download the pre-formatted 50-employee CSV.</li>
-              <li><strong>Upload & Validate:</strong> Drag the CSV into the dropzone to trigger the instant "Fail-Fast" database validation.</li>
-              <li><strong>Process Payroll:</strong> Click Process and watch the 5-worker Go routine concurrently generate encrypted PDFs and dispatch emails.</li>
+              <li><strong>Add Employee:</strong> Register yourself in the "Employees" tab with a real email.</li>
+              <li><strong>Upload CSV:</strong> Go to "New Payroll Run" and upload a payroll CSV.</li>
+              <li><strong>Preview & Validate:</strong> Preview the raw file, then click "Validate Data" to cross-check records against the database.</li>
+              <li><strong>Process Payroll:</strong> Click process to generate the PDFs and send the emails in the background.</li>
+              <li><strong>Check Inbox:</strong> Check your email (and Spam folder). The PDF password is the employee's First Name + Birth Year.</li>
             </ul>
           </div>
         </div>
