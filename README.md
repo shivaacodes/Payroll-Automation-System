@@ -8,6 +8,8 @@
 
 An enterprise-grade, end-to-end payroll processing and dispatch platform. This system ingests CSV/Excel employee data, concurrently generates AES-256 encrypted PDF salary slips, and dispatches them via SendGrid(SMTP), all while providing real-time UI tracking through a decoupled Nextjs dashboard.
 
+🚀 **Live Demo:** [https://payroll-automation-system.vercel.app/](https://payroll-automation-system.vercel.app/)
+
 ## Processing Pipeline
 
 ![Processing Pipeline](frontend/public/pipeline.png)
