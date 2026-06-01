@@ -10,6 +10,12 @@ An enterprise-grade, end-to-end payroll processing and dispatch platform. This s
 
 🚀 **Live Demo:** [https://payroll-automation-system.vercel.app/](https://payroll-automation-system.vercel.app/)
 
+## Tech Stack
+- **Frontend:** Next.js (App Router), React, TailwindCSS.
+- **Backend:** Go, Fiber, GORM, `pdfcpu`, `gofpdf`.
+- **Database:** PostgreSQL (Supabase)
+- **Infrastructure:** Docker, Docker Compose
+
 ## Processing Pipeline
 
 ![Processing Pipeline](frontend/public/pipeline.png)
@@ -89,9 +95,3 @@ To shut down the environment:
 ```bash
 docker compose down
 ```
-
-## Tech Stack
-- **Frontend:** Next.js (App Router), React, TailwindCSS.
-- **Backend:** Go, Fiber, GORM, `pdfcpu`, `gofpdf`.
-- **Database:** PostgreSQL (Supabase)
-- **Infrastructure:** Docker, Docker Compose (Multi-stage builds for minimal container sizes).
