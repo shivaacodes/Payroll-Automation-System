@@ -56,11 +56,6 @@ export default function JobRow({ job, isExpanded, onToggle, onDelete }: JobRowPr
         <td className="text-center text-slate-500 text-xs">{job.startedAt}</td>
         <td className="text-right">
           <div className="flex items-center justify-end gap-2">
-            {job.status === 'failed' && (
-              <button className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-violet-800 transition-colors">
-                <ArrowClockwise className="w-3 h-3" /> Retry
-              </button>
-            )}
             <button 
               onClick={(e) => { e.stopPropagation(); onDelete(); }}
               className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-sm transition-colors"
