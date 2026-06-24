@@ -7,14 +7,13 @@ import { usePathname } from 'next/navigation';
 import { 
   House, 
   CloudArrowUp, 
-  HardDrives, 
   Users,
-  SignOut,
   Receipt,
   FileText,
-  CarProfile,
-  Moon,
-  Sun
+  BuildingOffice,
+  ShieldCheck,
+  Gear,
+  Bank
 } from '@phosphor-icons/react/dist/ssr';
 import { useTheme } from 'next-themes';
 
@@ -22,18 +21,15 @@ export const navItems = [
   { href: '/dashboard', label: 'HR Overview', icon: House },
   { href: '/dashboard/employees', label: 'Employee Directory', icon: Users },
   { href: '/dashboard/upload', label: 'Process Payroll', icon: CloudArrowUp },
-  { href: '/dashboard/jobs', label: 'Batch Jobs', icon: HardDrives },
   { href: '/dashboard/reports', label: 'Payroll History', icon: FileText },
+  { href: '#', label: 'Tax Documents', icon: Receipt },
+  { href: '#', label: 'Department Roster', icon: BuildingOffice },
+  { href: '#', label: 'Audit Logs', icon: ShieldCheck },
+  { href: '#', label: 'System Settings', icon: Gear },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
 
   return (
     <aside className="w-56 border-r border-border bg-card flex flex-col hidden md:flex shrink-0">
@@ -65,26 +61,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Footer Area with Logout & Theme Toggle */}
-      <div className="p-4 border-t border-border space-y-1">
-        {mounted && (
-          <button 
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="flex items-center gap-2.5 px-2.5 py-2 rounded-sm text-sm transition-colors text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white w-full"
-          >
-            {theme === 'dark' ? <Sun className="w-4 h-4 shrink-0" /> : <Moon className="w-4 h-4 shrink-0" />}
-            <span className="font-medium">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-          </button>
-        )}
-        <Link 
-          href="/"
-          className="flex items-center gap-2.5 px-2.5 py-2 rounded-sm text-sm transition-colors text-slate-600 hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-rose-500 w-full"
-        >
-          <SignOut className="w-4 h-4 shrink-0" />
-          <span className="font-medium">Logout</span>
-        </Link>
-      </div>
-
+      </nav>
     </aside>
   );
 }
