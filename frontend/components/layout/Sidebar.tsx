@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { 
   House, 
@@ -39,8 +40,8 @@ export default function Sidebar() {
       {/* Logo Area */}
       <div className="h-14 flex items-center px-4 border-b border-slate-900">
         <Link href="/dashboard" className="flex items-center gap-2 text-white hover:text-white/90 transition-colors">
-          <CarProfile className="w-6 h-6 text-primary" weight="fill" />
-          <span className="font-bold text-sm tracking-widest uppercase">Nippon Toyota</span>
+          <Image src="/nippon_toyota.png" alt="Nippon Toyota" width={28} height={28} className="object-contain" />
+          <span className="font-bold text-sm tracking-widest uppercase mt-0.5">Nippon Toyota</span>
         </Link>
       </div>
       
