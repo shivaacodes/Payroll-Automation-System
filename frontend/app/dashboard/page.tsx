@@ -54,13 +54,13 @@ export default function DashboardOverview() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-slate-900">Dashboard</h2>
+          <h2 className="text-xl font-semibold text-slate-900">HR Overview</h2>
         </div>
         <Link 
           href="/dashboard/upload" 
           className="bg-primary text-white px-4 py-2 rounded-sm text-sm font-medium hover:bg-violet-800 transition-colors inline-flex items-center gap-2 shadow-sm"
         >
-          New Payroll Run <ArrowRight weight="bold" className="w-3.5 h-3.5" />
+          Process Monthly Payroll Batch <ArrowRight weight="bold" className="w-3.5 h-3.5" />
         </Link>
       </div>
 
@@ -69,7 +69,7 @@ export default function DashboardOverview() {
       {/* Top Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard 
-          title="Total Employees" 
+          title="Dealership Headcount" 
           value={loading ? "..." : stats.totalEmployees.toString()} 
           subtitle="Active roster" 
           icon={Users} 
@@ -82,9 +82,9 @@ export default function DashboardOverview() {
           valueColor={stats.currentBatch !== '-' ? 'text-blue-600' : 'text-slate-400'}
         />
         <StatCard 
-          title="Emails Sent" 
+          title="WhatsApp Sent" 
           value={loading ? "..." : stats.emailsSent.toString()} 
-          subtitle="All time" 
+          subtitle="Secure deliveries" 
           icon={EnvelopeSimple} 
         />
         <StatCard 
@@ -101,7 +101,7 @@ export default function DashboardOverview() {
         {/* Recent Jobs Table */}
         <div className="bg-white border-y md:border border-slate-200 md:rounded-sm shadow-sm overflow-hidden flex flex-col -mx-4 md:mx-0">
           <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
-            <h3 className="text-sm font-semibold text-slate-800">Recent Jobs</h3>
+            <h3 className="text-sm font-semibold text-slate-800">Recent Payroll Batches</h3>
             <Link href="/dashboard/jobs" className="text-xs font-medium text-primary hover:underline">View all</Link>
           </div>
           <div className="overflow-x-auto">
