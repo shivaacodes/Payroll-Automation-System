@@ -5,7 +5,6 @@ export interface Employee {
   ID: number;
   EmployeeID: string;
   Name: string;
-  Email: string;
   PhoneNumber?: string;
   Designation: string;
   DOBYear: string;

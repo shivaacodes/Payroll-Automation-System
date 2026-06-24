@@ -8,7 +8,7 @@ import { useReports } from '@/hooks/useReports';
 import { API_BASE_URL } from '@/lib/api';
 
 export default function ReportsPage() {
-  const { reports, loading, resendingId, resendEmail, deleteReport, clearAllReports } = useReports();
+  const { reports, loading, resendingId, resendWhatsApp, deleteReport, clearAllReports } = useReports();
   const [toastMsg, setToastMsg] = useState('');
   const [toastVar, setToastVar] = useState<'success' | 'danger'>('success');
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
@@ -16,9 +16,9 @@ export default function ReportsPage() {
 
   const handleResend = async (id: number) => {
     try {
-      await resendEmail(id);
+      await resendWhatsApp(id);
       setToastVar('success');
-      setToastMsg('Payslip successfully resent. Please check your spam folder.');
+      setToastMsg('Payslip successfully resent via WhatsApp.');
     } catch (err) {
       setToastVar('danger');
       setToastMsg('Failed to resend payslip.');
@@ -157,7 +157,7 @@ export default function ReportsPage() {
                         <button 
                           onClick={() => handleResend(report.id)}
                           disabled={resendingId === report.id}
-                          title="Resend Email"
+                          title="Resend WhatsApp"
                           className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-sm transition-colors disabled:opacity-50"
                         >
                           {resendingId === report.id ? <Spinner className="w-5 h-5 animate-spin text-blue-600" /> : <PaperPlaneRight className="w-5 h-5" />}

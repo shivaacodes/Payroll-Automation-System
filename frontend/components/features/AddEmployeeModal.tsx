@@ -11,7 +11,6 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
   const [formData, setFormData] = useState({
     EmployeeID: '',
     Name: '',
-    Email: '',
     PhoneNumber: '',
     Designation: '',
     DOBYear: ''
@@ -91,19 +90,9 @@ export default function AddEmployeeModal({ onClose, onSuccess }: AddEmployeeModa
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">Email Address (Optional)</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Phone Number</label>
               <input 
-                type="email" 
-                name="Email"
-                value={formData.Email}
-                onChange={handleChange}
-                placeholder="shivasajay007@gmail.com" 
-                className="w-full px-3 py-2 border border-slate-300 rounded-sm text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" 
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">Phone Number (Optional)</label>
-              <input 
+                required
                 type="tel" 
                 name="PhoneNumber"
                 value={formData.PhoneNumber}

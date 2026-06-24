@@ -33,7 +33,7 @@ export function useReports() {
     loadReports();
   }, [loadReports]);
 
-  const resendEmail = async (id: number) => {
+  const resendWhatsApp = async (id: number) => {
     setResendingId(id);
     try {
       await fetchAPI(`/api/reports/${id}/resend`, { method: 'POST' });
@@ -70,7 +70,7 @@ export function useReports() {
     loading,
     error,
     resendingId,
-    resendEmail,
+    resendWhatsApp,
     deleteReport,
     clearAllReports,
     refresh: loadReports,
