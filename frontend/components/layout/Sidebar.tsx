@@ -22,10 +22,10 @@ export const navItems = [
   { href: '/dashboard/employees', label: 'Employee Directory', icon: Users },
   { href: '/dashboard/upload', label: 'Process Payroll', icon: CloudArrowUp },
   { href: '/dashboard/reports', label: 'Payroll History', icon: FileText },
-  { href: '#', label: 'Tax Documents', icon: Receipt },
-  { href: '#', label: 'Department Roster', icon: BuildingOffice },
-  { href: '#', label: 'Audit Logs', icon: ShieldCheck },
-  { href: '#', label: 'System Settings', icon: Gear },
+  { href: '#tax', label: 'Tax Documents', icon: Receipt },
+  { href: '#roster', label: 'Department Roster', icon: BuildingOffice },
+  { href: '#audit', label: 'Audit Logs', icon: ShieldCheck },
+  { href: '#settings', label: 'System Settings', icon: Gear },
 ];
 
 export default function Sidebar() {
