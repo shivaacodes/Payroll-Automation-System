@@ -6,6 +6,7 @@ export interface Employee {
   EmployeeID: string;
   Name: string;
   Email: string;
+  PhoneNumber?: string;
   Designation: string;
   DOBYear: string;
 }

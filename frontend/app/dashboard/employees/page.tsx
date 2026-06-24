@@ -209,6 +209,7 @@ export default function EmployeesDirectory() {
                 <th>Emp ID</th>
                 <th>Name</th>
                 <th>Email Address</th>
+                <th>Phone Number</th>
                 <th>Designation</th>
                 <th>Birth Year</th>
                 <th className="text-center w-16"></th>
@@ -232,7 +233,8 @@ export default function EmployeesDirectory() {
                   <tr key={emp.ID}>
                     <td className="font-medium text-slate-900">{emp.EmployeeID}</td>
                     <td>{emp.Name}</td>
-                    <td>{emp.Email}</td>
+                    <td>{emp.Email || <span className="text-slate-400 italic">None</span>}</td>
+                    <td>{emp.PhoneNumber || <span className="text-slate-400 italic">None</span>}</td>
                     <td>{emp.Designation}</td>
                     <td>{emp.DOBYear}</td>
                     <td className="text-center">

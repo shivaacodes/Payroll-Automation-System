@@ -1,6 +1,7 @@
 package workers
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -38,9 +39,16 @@ func worker(workerID int) {
 			success = false
 		} else {
 			if job.JobIndex < 5 {
-				err = mailer.SendSalarySlip(job.Employee, pdfPath, job.Entry.MonthYear)
+				if job.Employee.Email != "" {
+					err = mailer.SendSalarySlip(job.Employee, pdfPath, job.Entry.MonthYear)
+				} else if job.Employee.PhoneNumber != "" {
+					err = mailer.SendWhatsAppSlip(job.Employee, pdfPath, job.Entry.MonthYear)
+				} else {
+					err = fmt.Errorf("no delivery method found for employee %s", job.Employee.EmployeeID)
+				}
+
 				if err != nil {
-					log.Printf("[Worker %d] ERROR Email: %v", workerID, err)
+					log.Printf("[Worker %d] ERROR Delivery: %v", workerID, err)
 					success = false
 				}
 			} else {
