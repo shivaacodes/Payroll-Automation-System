@@ -11,8 +11,11 @@ import {
   SignOut,
   Receipt,
   FileText,
-  CarProfile
+  CarProfile,
+  Moon,
+  Sun
 } from '@phosphor-icons/react/dist/ssr';
+import { useTheme } from 'next-themes';
 
 export const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: House },
@@ -24,6 +27,12 @@ export const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <aside className="w-56 border-r border-slate-900 bg-slate-950 flex flex-col hidden md:flex shrink-0">
@@ -59,8 +68,17 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Footer Area with Logout */}
-      <div className="p-4 border-t border-slate-900">
+      {/* Footer Area with Logout & Theme Toggle */}
+      <div className="p-4 border-t border-slate-900 space-y-1">
+        {mounted && (
+          <button 
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="flex items-center gap-2.5 px-2.5 py-2 rounded-sm text-sm transition-colors text-slate-400 hover:bg-slate-900 hover:text-white w-full"
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4 shrink-0" /> : <Moon className="w-4 h-4 shrink-0" />}
+            <span className="font-medium">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
+        )}
         <Link 
           href="/"
           className="flex items-center gap-2.5 px-2.5 py-2 rounded-sm text-sm transition-colors text-slate-400 hover:bg-slate-900 hover:text-rose-500 w-full"
