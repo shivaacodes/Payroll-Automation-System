@@ -14,7 +14,6 @@ import (
 type PreviewRecord struct {
 	EmployeeID  string  `json:"employeeId"`
 	Name        string  `json:"name"`
-	Email       string  `json:"email"`
 	BaseSalary  float64 `json:"baseSalary"`
 	HRA         float64 `json:"hra"`
 	Allowances  float64 `json:"allowances"`
@@ -87,7 +86,6 @@ func ParseAndValidateCSV(file *multipart.FileHeader) ([]PreviewRecord, error) {
 		previews = append(previews, PreviewRecord{
 			EmployeeID: emp.EmployeeID,
 			Name:       emp.Name,
-			Email:      emp.Email,
 			BaseSalary: base,
 			HRA:        hra,
 			Allowances: allowances,

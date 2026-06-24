@@ -20,16 +20,16 @@ func CreateEmployee(c *fiber.Ctx) error {
 		})
 	}
 
-	if emp.EmployeeID == "" || emp.Name == "" || emp.Email == "" || emp.DOBYear == "" {
+	if emp.EmployeeID == "" || emp.Name == "" || emp.DOBYear == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Missing required fields (EmployeeID, Name, Email, DOBYear)",
+			"error": "Missing required fields (EmployeeID, Name, DOBYear)",
 		})
 	}
 
 	result := db.DB.Create(&emp)
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to create employee, might be a duplicate EmployeeID or Email",
+			"error": "Failed to create employee, might be a duplicate EmployeeID",
 		})
 	}
 
@@ -103,13 +103,12 @@ func BulkUploadEmployees(c *fiber.Ctx) error {
 		}
 		emp := models.Employee{
 			EmployeeID:  strings.TrimSpace(row[0]),
-			Name:        strings.TrimSpace(row[1]),
-			Email:       strings.TrimSpace(row[2]),
+			PhoneNumber: strings.TrimSpace(row[2]),
 			Designation: strings.TrimSpace(row[3]),
 			DOBYear:     strings.TrimSpace(row[4]),
 		}
 
-		if emp.EmployeeID != "" && emp.Name != "" && emp.Email != "" {
+		if emp.EmployeeID != "" && emp.Name != "" {
 			employees = append(employees, emp)
 		}
 	}
@@ -121,7 +120,7 @@ func BulkUploadEmployees(c *fiber.Ctx) error {
 	// Bulk insert ; gorm will batch insert automatically
 	result := db.DB.Create(&employees)
 	if result.Error != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Failed to bulk insert employees. Check for duplicate IDs or Emails."})
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to bulk insert employees. Check for duplicate IDs."})
 	}
 
 	return c.Status(201).JSON(fiber.Map{

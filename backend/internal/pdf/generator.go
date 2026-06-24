@@ -66,7 +66,7 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	pdf.SetTextColor(150, 150, 150)
 	pdf.SetX(15)
 	pdf.Cell(90, 5, "DESIGNATION")
-	pdf.Cell(90, 5, "EMAIL")
+	pdf.Cell(90, 5, "PHONE NUMBER")
 	pdf.Ln(6)
 
 	pdf.SetFont("Arial", "", 12)
@@ -77,7 +77,7 @@ func GenerateAndProtectSlip(emp models.Employee, entry models.PayrollEntry) (str
 	formattedDesignation := titleCaser.String(emp.Designation)
 
 	pdf.Cell(90, 8, formattedDesignation)
-	pdf.Cell(90, 8, emp.Email)
+	pdf.Cell(90, 8, emp.PhoneNumber)
 
 	pdf.Ln(30)
 	pdf.SetDrawColor(220, 220, 220)

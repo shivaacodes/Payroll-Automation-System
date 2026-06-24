@@ -10,7 +10,6 @@ type Employee struct {
 	ID          uint      `gorm:"primaryKey"`
 	EmployeeID  string    `gorm:"uniqueIndex;not null"`
 	Name        string    `gorm:"not null"`
-	Email       string    `gorm:"default:''"`
 	PhoneNumber string    `gorm:"index;default:''"`
 	Designation string    `gorm:"not null"`
 	DOBYear     string    `gorm:"not null"` // will use for the PDF password

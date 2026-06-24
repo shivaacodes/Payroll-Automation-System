@@ -86,12 +86,12 @@ func ResendPayslip(c *fiber.Ctx) error {
 	}
 	defer os.Remove(pdfPath)
 
-	err = mailer.SendSalarySlip(emp, pdfPath, entry.MonthYear)
+	err = mailer.SendWhatsAppSlip(emp, pdfPath, entry.MonthYear)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Failed to resend email"})
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to resend WhatsApp"})
 	}
 
-	return c.JSON(fiber.Map{"message": "Email resent successfully"})
+	return c.JSON(fiber.Map{"message": "WhatsApp resent successfully"})
 }
 
 func DeleteReport(c *fiber.Ctx) error {
