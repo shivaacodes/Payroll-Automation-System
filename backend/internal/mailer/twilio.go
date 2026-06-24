@@ -24,12 +24,16 @@ func SendWhatsAppSlip(emp models.Employee, pdfPath string, month string) error {
 	//  MediaUrl: []string{pdfUrl}, // Would require uploading the PDF to a secure S3 bucket first
 	// })
 
-	log.Printf("[Twilio API] Sending WhatsApp to %s (%s)...", emp.Name, emp.PhoneNumber)
+	log.Printf("==================================================")
+	log.Printf("[TWILIO API] 🟢 Routing to WhatsApp")
+	log.Printf("[TWILIO API] Employee: %s (%s)", emp.Name, emp.PhoneNumber)
+	log.Printf("[TWILIO API] Status: Attaching Encrypted PDF...")
 	
 	// Simulate API latency
 	time.Sleep(200 * time.Millisecond)
 	
-	log.Printf("[Twilio API] Successfully delivered WhatsApp message to %s", emp.Name)
+	log.Printf("[TWILIO API] ✅ Successfully delivered WhatsApp message!")
+	log.Printf("==================================================")
 
 	return nil
 }

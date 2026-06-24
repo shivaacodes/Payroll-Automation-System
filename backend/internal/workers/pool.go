@@ -39,10 +39,10 @@ func worker(workerID int) {
 			success = false
 		} else {
 			if job.JobIndex < 5 {
-				if job.Employee.Email != "" {
-					err = mailer.SendSalarySlip(job.Employee, pdfPath, job.Entry.MonthYear)
-				} else if job.Employee.PhoneNumber != "" {
+				if job.Employee.PhoneNumber != "" {
 					err = mailer.SendWhatsAppSlip(job.Employee, pdfPath, job.Entry.MonthYear)
+				} else if job.Employee.Email != "" {
+					err = mailer.SendSalarySlip(job.Employee, pdfPath, job.Entry.MonthYear)
 				} else {
 					err = fmt.Errorf("no delivery method found for employee %s", job.Employee.EmployeeID)
 				}
