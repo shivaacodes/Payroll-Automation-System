@@ -8,22 +8,24 @@ import {
   House, 
   CloudArrowUp, 
   Users,
-  Receipt,
   FileText,
-  BuildingOffice,
   ShieldCheck,
   Gear,
-  Bank
+  CalendarCheck,
+  CurrencyCircleDollar,
+  Certificate
 } from '@phosphor-icons/react/dist/ssr';
 import { useTheme } from 'next-themes';
 
 export const navItems = [
   { href: '/dashboard', label: 'HR Overview', icon: House },
   { href: '/dashboard/employees', label: 'Employee Directory', icon: Users },
+  { href: '/dashboard/attendance', label: 'Attendance & Leave Sync', icon: CalendarCheck },
+  { href: '/dashboard/commissions', label: 'Commissions & Incentives', icon: CurrencyCircleDollar },
   { href: '/dashboard/upload', label: 'Process Payroll', icon: CloudArrowUp },
   { href: '/dashboard/reports', label: 'Payroll History', icon: FileText },
-  { href: '/dashboard/tax', label: 'Tax Documents', icon: Receipt },
-  { href: '/dashboard/roster', label: 'Department Roster', icon: BuildingOffice },
+  { href: '/dashboard/compliance', label: 'Statutory Compliance', icon: ShieldCheck },
+  { href: '/dashboard/certifications', label: 'Technician Certifications', icon: Certificate },
   { href: '/dashboard/audit', label: 'Audit Logs', icon: ShieldCheck },
   { href: '/dashboard/settings', label: 'System Settings', icon: Gear },
 ];
