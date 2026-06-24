@@ -19,11 +19,11 @@ import {
 import { useTheme } from 'next-themes';
 
 export const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: House },
-  { href: '/dashboard/employees', label: 'Employees', icon: Users },
-  { href: '/dashboard/upload', label: 'Upload Payroll', icon: CloudArrowUp },
-  { href: '/dashboard/jobs', label: 'Processing Jobs', icon: HardDrives },
-  { href: '/dashboard/reports', label: 'Reports', icon: FileText },
+  { href: '/dashboard', label: 'HR Overview', icon: House },
+  { href: '/dashboard/employees', label: 'Employee Directory', icon: Users },
+  { href: '/dashboard/upload', label: 'Process Payroll', icon: CloudArrowUp },
+  { href: '/dashboard/jobs', label: 'Batch Jobs', icon: HardDrives },
+  { href: '/dashboard/reports', label: 'Payroll History', icon: FileText },
 ];
 
 export default function Sidebar() {
@@ -38,10 +38,9 @@ export default function Sidebar() {
   return (
     <aside className="w-56 border-r border-slate-900 bg-slate-950 flex flex-col hidden md:flex shrink-0">
       {/* Logo Area */}
-      <div className="h-14 flex items-center px-4 border-b border-slate-900">
-        <Link href="/dashboard" className="flex items-center gap-2 text-white hover:text-white/90 transition-colors">
-          <Image src="/nippon_toyota.png" alt="Nippon Toyota" width={28} height={28} className="object-contain" />
-          <span className="font-bold text-sm tracking-widest uppercase mt-0.5">Nippon Toyota</span>
+      <div className="h-14 flex items-center justify-center border-b border-slate-900">
+        <Link href="/dashboard" className="flex items-center justify-center hover:opacity-90 transition-opacity w-full">
+          <Image src="/nippon_toyota.png" alt="Nippon Toyota" width={100} height={28} style={{ width: 'auto', height: '28px' }} className="object-contain" />
         </Link>
       </div>
       

@@ -139,25 +139,7 @@ export default function EmployeesDirectory() {
           <h2 className="text-xl font-semibold text-slate-900">Employee Directory</h2>
         </div>
         
-        {/* Evaluator Demo Banner */}
-        <div className="flex flex-col md:flex-row bg-indigo-50 border border-indigo-200 rounded-sm py-1.5 px-3 items-start md:items-center justify-between gap-3 shadow-sm w-full md:w-auto">
-          <div className="flex items-center gap-2">
-            <div className="bg-indigo-100 text-indigo-600 p-1 rounded-full">
-              <DownloadSimple weight="bold" className="w-3.5 h-3.5" />
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-indigo-900 leading-tight">Evaluator Demo Data</p>
-              <p className="text-[10px] text-indigo-700 leading-tight">50-record CSV to test Go bulk ingestion.</p>
-            </div>
-          </div>
-          <a 
-            href="/demo_employees.csv"
-            download="demo_employees.csv"
-            className="shrink-0 font-medium text-indigo-700 bg-white border border-indigo-200 px-2.5 py-1 rounded-sm hover:bg-indigo-100 transition-colors text-xs inline-flex items-center gap-1.5 shadow-sm"
-          >
-            Download
-          </a>
-        </div>
+
 
         <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
           {employees.length > 0 && (
